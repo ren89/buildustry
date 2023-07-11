@@ -23,17 +23,26 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form-input";
 
-const formSchema = z.object({
-  username: z.string().min(1, { message: "Username is required" }),
-  password: z.string().min(1, { message: "Password is required" }).max(50),
-});
+const formSchema = z
+  .object({
+    username: z.string().min(3, { message: "Username is required" }),
+    email: z.string().email(),
+    password: z.string().min(8, { message: "Password is too short" }).max(50),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Password don't match",
+  });
 
-export default function Home() {
+export default function Register() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -51,7 +60,7 @@ export default function Home() {
         </h1>
         <Card className="min-w-[400px]">
           <CardHeader>
-            <CardTitle className=" font-bold text-2xl">Login</CardTitle>
+            <CardTitle className=" font-bold text-2xl">Register</CardTitle>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -67,22 +76,35 @@ export default function Home() {
                 />
                 <FormInput
                   form={form}
+                  name="email"
+                  label="Email"
+                  placeholder="Email"
+                />
+                <FormInput
+                  form={form}
                   name="password"
                   label="Password"
                   placeholder="Password"
                   type="password"
                 />
+                <FormInput
+                  form={form}
+                  name="confirmPassword"
+                  label="Confirm Password"
+                  placeholder="Confirm Password"
+                  type="password"
+                />
                 <Button className="bg-emerald-500 w-full mt-4" type="submit">
-                  Login
+                  Register
                 </Button>
               </form>
             </Form>
           </CardContent>
           <CardFooter className="flex justify-center">
             <p>
-              Don't have an account yet?{" "}
-              <Link href="/register" className="text-emerald-500 font-semibold">
-                Register Now
+              Already a user?{" "}
+              <Link href="/" className="text-emerald-500 font-semibold">
+                Login Here
               </Link>
             </p>
           </CardFooter>
