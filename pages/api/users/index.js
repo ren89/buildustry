@@ -6,10 +6,17 @@ const prisma = new PrismaClient();
 
 //  @desc   Get all users
 //  @route  GET /api/users
-//  @access Private/Admin
+//  @access Private
 const getUsers = async (req, res) => {
+	const { role } = req.query;
 	const users = await prisma.user.findMany();
-	res.status(200).json(users);
+
+	let filteredUsers = users;
+
+	if (role) {
+		filteredUsers = users.filter((user) => user.role === role);
+	}
+	res.status(200).json(filteredUsers);
 };
 
 //  @desc   Create user
