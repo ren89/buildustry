@@ -4,18 +4,10 @@ import encryptPassword from '@/utils/encryptPassword';
 
 const prisma = new PrismaClient();
 
-//  @desc   Get all users
-//  @route  GET /api/users
-//  @access Private/Admin
-const getUsers = async (req, res) => {
-	const users = await prisma.user.findMany();
-	res.status(200).json(users);
-};
-
-//  @desc   Create user
-//  @route  POST /api/users
+//  @desc   Register user
+//  @route  GET /api/auth/register
 //  @access Public
-const createUsers = async (req, res) => {
+const registerUser = async (req, res) => {
 	const { firstName, lastName, username, password, email, contactNumber } =
 		req.body;
 
@@ -49,11 +41,8 @@ const createUsers = async (req, res) => {
 
 export default asyncHandler(async (req, res) => {
 	switch (req.method) {
-		case 'GET':
-			await getUsers(req, res);
-			break;
 		case 'POST':
-			await createUsers(req, res);
+			await registerUser(req, res);
 			break;
 		default:
 			res.status(405).json({ message: 'Method not allowed' });

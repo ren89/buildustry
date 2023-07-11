@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
-import encryptPassword from '@/middlewares/encryptPassword';
+import encryptPassword from '@/utils/encryptPassword';
 
 const prisma = new PrismaClient();
 
