@@ -3,7 +3,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head />
-      <body>
+      <body className="bg-slate-50 text-slate-900">
         <Main />
         <NextScript />
       </body>
