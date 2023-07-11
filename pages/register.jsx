@@ -6,16 +6,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import Image from "next/image";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,11 +14,20 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form-input";
 import FormSelect from "@/components/form-select";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/components/ui/use-toast";
+import axios from "axios";
 
 const formSchema = z
   .object({
     username: z.string().min(3, { message: "Username is required" }),
     email: z.string().email(),
+    firstName: z.string().min(3, { message: "First Name is required" }),
+    lastName: z.string().min(3, { message: "Last Name is required" }),
+    contactNumber: z
+      .string()
+      .min(11, { message: "Contact Number is required" }),
+    role: z.string(),
     password: z.string().min(8, { message: "Password is too short" }).max(50),
     confirmPassword: z.string(),
   })
@@ -51,9 +51,23 @@ export default function Register() {
     },
   });
 
+  const { toast } = useToast();
+
+  const { mutate } = useMutation(async (values) => {
+    const response = await axios.post("/api/auth/register", values);
+
+    if (response) {
+      toast({
+        title: "User creation",
+        description: response.data.message,
+      });
+    }
+  });
+
   function onSubmit(values) {
-    console.log(values);
+    mutate(values);
   }
+
   return (
     <main className="min-h-screen flex">
       <div className="w-1/2 min-h-full relative">

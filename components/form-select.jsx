@@ -23,7 +23,9 @@ const FormSelect = ({ form, placeholder, label, name, options }) => {
               <SelectContent>
                 {options.map((option) => {
                   return (
-                    <SelectItem value={option.value}>{option.label}</SelectItem>
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
                   );
                 })}
               </SelectContent>
