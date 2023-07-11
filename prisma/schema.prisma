@@ -18,7 +18,7 @@ model User {
   password      String    @default("password-excluded")
   email         String    @unique
   contactNumber String
-  type          String    @default("client")
+  role          String    @default("client")
   rating        Int       @default(0)
   projects      Project[]
 }

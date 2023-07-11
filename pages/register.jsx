@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form-input";
+import FormSelect from "@/components/form-select";
 
 const formSchema = z
   .object({
@@ -40,7 +41,11 @@ export default function Register() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      firstName: "",
+      lastName: "",
+      contactNumber: "",
       email: "",
+      role: "client",
       password: "",
       confirmPassword: "",
     },
@@ -66,8 +71,22 @@ export default function Register() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="flex flex-col gap-4"
+                className="flex flex-col gap-2"
               >
+                <div className="flex gap-2">
+                  <FormInput
+                    form={form}
+                    name="firstName"
+                    label="First Name"
+                    placeholder="First Name"
+                  />
+                  <FormInput
+                    form={form}
+                    name="lastName"
+                    label="Last Name"
+                    placeholder="Last Name"
+                  />
+                </div>
                 <FormInput
                   form={form}
                   name="username"
@@ -79,6 +98,23 @@ export default function Register() {
                   name="email"
                   label="Email"
                   placeholder="Email"
+                />
+                <FormInput
+                  form={form}
+                  name="contactNumber"
+                  label="Contact Number"
+                  placeholder="Contact Number"
+                />
+                <FormSelect
+                  form={form}
+                  name="role"
+                  label="Role"
+                  placeholder="Role"
+                  options={[
+                    { label: "Client", value: "client" },
+                    { label: "Laborer", value: "laborer" },
+                    { label: "Contractor", value: "contractor" },
+                  ]}
                 />
                 <FormInput
                   form={form}
