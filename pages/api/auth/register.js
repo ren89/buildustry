@@ -32,7 +32,7 @@ const registerUser = async (req, res) => {
   }
 
   const hashedPassword = await encryptPassword(password);
-  const user = await prisma.user.create({
+  await prisma.user.create({
     data: {
       firstName,
       lastName,
@@ -44,7 +44,7 @@ const registerUser = async (req, res) => {
     },
   });
 
-  res.status(201).json(user);
+  res.status(201).json({ message: "User successfully created." });
 };
 
 export default asyncHandler(async (req, res) => {

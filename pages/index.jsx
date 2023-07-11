@@ -6,22 +6,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import Image from "next/image";
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import FormInput from "@/components/form-input";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 const formSchema = z.object({
   username: z.string().min(1, { message: "Username is required" }),
@@ -29,6 +23,8 @@ const formSchema = z.object({
 });
 
 export default function Home() {
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,9 +33,30 @@ export default function Home() {
     },
   });
 
+  const { mutate } = useMutation(
+    async (values) => {
+      const response = await axios.post("/api/auth/login", {
+        identifier: values.username,
+        password: values.password,
+      });
+
+      return response;
+    },
+    {
+      onSuccess: (response) => {
+        if (response.data.message) {
+          form.setError("username", response.data);
+        } else {
+          router.push("/dashboard");
+        }
+      },
+    }
+  );
+
   function onSubmit(values) {
-    console.log(values);
+    mutate(values);
   }
+
   return (
     <main className="min-h-screen flex">
       <div className="w-1/2 min-h-full relative">
@@ -80,7 +97,7 @@ export default function Home() {
           </CardContent>
           <CardFooter className="flex justify-center">
             <p>
-              Don't have an account yet?{" "}
+              Don&apos;t have an account yet?{" "}
               <Link href="/register" className="text-emerald-500 font-semibold">
                 Register Now
               </Link>
