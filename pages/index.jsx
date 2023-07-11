@@ -21,6 +21,7 @@ import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
+import FormInput from "@/components/form-input";
 
 const formSchema = z.object({
   username: z.string().min(2).max(50),
@@ -58,31 +59,17 @@ export default function Home() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-4"
               >
-                <FormField
-                  control={form.control}
+                <FormInput
+                  form={form}
                   name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Username" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Username"
+                  placeholder="Username"
                 />
-                <FormField
-                  control={form.control}
+                <FormInput
+                  form={form}
                   name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Password"
+                  placeholder="Password"
                 />
                 <Button className="bg-emerald-500 w-full mt-4" type="submit">
                   Login
