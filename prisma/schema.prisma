@@ -20,11 +20,13 @@ model User {
   email         String      @unique
   contactNumber String
   role          String      @default("client")
-  rating        Float        @default(0)
+  rating        Float       @default(0)
   notifications Notification[]
   projects      Project[]
   portfolioId   String?     @unique
   portfolio     Portfolio?  @relation("userPortfolio", fields: [portfolioId], references: [id])
+  sentMessages Message[] @relation("Sender")
+  receivedMessages Message[] @relation("Receiver")
 }
 
 model Notification {
@@ -70,4 +72,14 @@ model Image {
   url             String?
   project         CompletedProject @relation(fields: [projectId], references: [id])
   projectId       Int
+}
+
+model Message {
+  id          Int     @id @default(autoincrement())
+  content     String
+  createdAt   DateTime @default(now())
+  senderId    String
+  sender      User    @relation("Sender", fields: [senderId], references: [id])
+  receiverId  String
+  receiver    User    @relation("Receiver", fields: [receiverId], references: [id])
 }
