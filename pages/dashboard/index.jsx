@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import Rating from "@/components/rating";
+import { Send } from "lucide-react";
+import DashboardLayout from "@/components/dashboard-layout";
 
 const tempWorkers = [
   {
@@ -38,31 +40,33 @@ const Dashboard = () => {
   console;
 
   return (
-    <main className="min-h-screen flex flex-col  items-center">
-      {!isLoading ? (
-        <Label className="text-2xl font-bold text-slate-900">
-          Hello, {user.data["firstName"] + " " + user.data["lastName"]}
+    <DashboardLayout>
+      <main className="min-h-screen flex flex-col  items-center">
+        {!isLoading ? (
+          <Label className="text-2xl font-bold text-slate-900">
+            Hello, {user.data["firstName"] + " " + user.data["lastName"]}
+          </Label>
+        ) : null}
+        <Label className="text-slate-500">
+          Welcome to Buildustry! What are you looking for?
         </Label>
-      ) : null}
-      <Label className="text-slate-500">
-        Welcome to Buildustry! What are you looking for?
-      </Label>
-      <WorkerTable workers={tempWorkers} />
-      {/* HomePage1 */}
-      {/* <div className="flex mt-10">
+        <WorkerTable workers={tempWorkers} />
+        {/* HomePage1 */}
+        {/* <div className="flex mt-10">
         <CustomCard
-          icon="/images/frame.png"
-          heading="Contractors"
-          content="Get in touch with the best contractors in the industry"
+        icon="/images/frame.png"
+        heading="Contractors"
+        content="Get in touch with the best contractors in the industry"
         />
         <CustomCard
-          icon="/images/hard-hat.png"
-          heading="Laborers"
-          content="Contact the best individuals for your specific needs"
+        icon="/images/hard-hat.png"
+        heading="Laborers"
+        content="Contact the best individuals for your specific needs"
         />
       </div> */}
-      {/* <pre>{JSON.stringify(user?.data, null, 2)}</pre> */}
-    </main>
+        {/* <pre>{JSON.stringify(user?.data, null, 2)}</pre> */}
+      </main>
+    </DashboardLayout>
   );
 };
 
@@ -79,7 +83,6 @@ const CustomCard = ({ icon, heading, content }) => {
 };
 
 const WorkerTable = (workers) => {
-  console.log(workers.workers);
   return (
     <Card className="w-[850px]">
       <Table>
@@ -99,15 +102,9 @@ const WorkerTable = (workers) => {
                   <Rating value={worker.rating} />
                 </TableCell>
                 <TableCell className="text-right">
-                  <Button className="bg-white text-black py-2">
-                    <Image
-                      src="/images/send.png"
-                      alt="Building"
-                      width={24}
-                      height={24}
-                      className="mr-4"
-                    />
-                    Message
+                  <Button variant="outline" className="space-x-2">
+                    <Send size={24} />
+                    <span>Message</span>
                   </Button>
                 </TableCell>
               </TableRow>
