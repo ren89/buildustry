@@ -8,39 +8,54 @@ import FormTextArea from "../form-text-area";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { services } from "@/lib/services";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 const newProjectSchema = z.object({
-  name: z.string().min(1, { message: "Project name is required" }),
+  projectName: z.string().min(1, { message: "Project name is required" }),
   description: z.string().min(1, { message: "Description is required" }),
-  service: z.string().min(1, { message: "Service is required" }),
+  service: z.string().optional(),
   worker: z.string().min(1, { message: "Worker is required" }),
 });
 
-const NewProjectForm = ({ setOpen, viewOnly, role }) => {
+const NewProjectForm = ({ setOpen, viewOnly, role, worker }) => {
   const form = useForm({
     resolver: zodResolver(newProjectSchema),
     defaultValues: {
       projectName: "",
       description: "",
       service: "",
-      worker: "",
+      worker: `${worker.firstName} ${worker.lastName}`,
     },
   });
 
   const { toast } = useToast();
 
+  const { mutate } = useMutation(
+    async (values) => {
+      await axios.post("/api/projects", {
+        typeOfService: values.service,
+        name: values.projectName,
+        description: values.description,
+        workerId: worker.id,
+      });
+    },
+    {
+      onSuccess() {
+        toast({
+          title: "Request Sent",
+          description:
+            "Job request has been forwarded to the person you have messaged.",
+        });
+        setOpen(false);
+      },
+    }
+  );
+
   function onSubmit(values) {
     if (!viewOnly) {
-      // TODO add mutation
-
-      toast({
-        title: "Request Sent",
-        description:
-          "Job request has been forwarded to the person you have messaged.",
-      });
+      mutate(values);
     }
-
-    setOpen(false);
   }
 
   return (
@@ -51,7 +66,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role }) => {
       >
         <FormInput
           form={form}
-          name="name"
+          name="projectName"
           label="Project Name"
           placeholder="Project Name"
           viewOnly={viewOnly}
@@ -82,9 +97,10 @@ const NewProjectForm = ({ setOpen, viewOnly, role }) => {
         )}
 
         <Button
-          className="bg-emerald-500 w-full mt-4"
+          disabled={viewOnly}
+          className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
           type={viewOnly ? "button" : "submit"}
-          onClick={() => viewOnly && setOpen(false)}
+          // onClick={() => viewOnly && setOpen(false)}
         >
           {viewOnly ? "Close" : "Submit"}
         </Button>

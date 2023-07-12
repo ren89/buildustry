@@ -57,6 +57,7 @@ export default function Register() {
     const response = await axios.post("/api/auth/register", values);
 
     if (response) {
+      //TODO: go to login
       toast({
         title: "User creation",
         description: response.data.message,
