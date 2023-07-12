@@ -16,10 +16,10 @@ const DashboardLayout = ({ children }) => {
         </div>
       </div>
       <div className="grid grid-cols-12">
-        <div className="col-span-2">
+        <div className="col-span-2 border-r border-slate-200 min-h-[80vh]">
           <Navigation />
         </div>
-        <div className="col-span-10">
+        <div className="col-span-10 grid grid-cols-8 auto-rows-min gap-6">
           {/* Content */}
           {children}
         </div>
