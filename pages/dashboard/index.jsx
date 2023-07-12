@@ -1,23 +1,11 @@
-import { Card } from "@/components/ui/card";
 import { Label } from "@radix-ui/react-label";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import Rating from "@/components/rating";
-import { Send } from "lucide-react";
 import DashboardLayout from "@/components/dashboard-layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTable, userColumns } from "@/components/user-table";
 
-const tempWorkers = [
+export const workers = [
   {
     name: "John Doe",
     rating: 5,
@@ -64,13 +52,13 @@ const Dashboard = () => {
           </TabsList>
           <TabsContent value="contractors">
             <UserTable
-              data={tempWorkers}
+              data={workers}
               columns={userColumns}
               filter={["services"]}
             />
           </TabsContent>
           <TabsContent value="laborers">
-            <UserTable data={tempWorkers} columns={userColumns} />
+            <UserTable data={workers} columns={userColumns} />
           </TabsContent>
         </Tabs>
       </div>
