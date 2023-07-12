@@ -8,7 +8,7 @@ import FormTextArea from "../form-text-area";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { services } from "@/lib/services";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 const newProjectSchema = z.object({
@@ -18,17 +18,22 @@ const newProjectSchema = z.object({
   worker: z.string().min(1, { message: "Worker is required" }),
 });
 
-const NewProjectForm = ({ setOpen, viewOnly, role, worker }) => {
+const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
+  const { data: user } = useQuery(["user"], async () => {
+    const response = await axios.get("/api/auth/me");
+
+    return response.data;
+  });
+
   const form = useForm({
     resolver: zodResolver(newProjectSchema),
     defaultValues: {
-      projectName: "",
-      description: "",
-      service: "",
-      worker: `${worker.firstName} ${worker.lastName}`,
+      projectName: project ? project.name : "",
+      description: project ? project.description : "",
+      service: project ? project.typeOfService : "",
+      worker: project ? "" : `${worker.firstName} ${worker.lastName}`,
     },
   });
-
   const { toast } = useToast();
 
   const { mutate } = useMutation(
@@ -37,7 +42,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker }) => {
         typeOfService: values.service,
         name: values.projectName,
         description: values.description,
-        workerId: worker.id,
+        workerId: project ? "" : worker.id,
       });
     },
     {
@@ -52,10 +57,64 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker }) => {
     }
   );
 
+  const { mutate: updateStatus } = useMutation(
+    async (values) => {
+      await axios.put(`/api/projects/${values.id}`, {
+        status: values.status,
+      });
+    },
+    {
+      onSuccess() {
+        toast({
+          title: "Status Changed",
+          description: "Project status has been updated.",
+        });
+        setOpen(false);
+      },
+    }
+  );
+
+  const { mutate: createNotification } = useMutation(
+    async (values) => {
+      await axios.post(`/api/users/${user.id}/notification`, {
+        title: values.title,
+        content: values.content,
+        userId: values.id,
+      });
+    },
+    {
+      onSuccess() {
+        toast({
+          title: "Notication Sent",
+          description: "Notification has been sent.",
+        });
+        setOpen(false);
+      },
+    }
+  );
+
   function onSubmit(values) {
     if (!viewOnly) {
       mutate(values);
+      createNotification({
+        title: "New Project Request",
+        content: "You have a new project request. ",
+        id: worker.id,
+      });
     }
+  }
+
+  function updateProjectStatus({
+    newStatus,
+    notificationTitle,
+    notificationContent,
+  }) {
+    updateStatus({ status: newStatus, id: project.id });
+    createNotification({
+      title: notificationTitle,
+      content: notificationContent,
+      id: project.clientId,
+    });
   }
 
   return (
@@ -78,13 +137,16 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker }) => {
           placeholder="Description"
           viewOnly={viewOnly}
         />
-        <FormInput
-          form={form}
-          name="worker"
-          label="Worker"
-          placeholder="Worker"
-          viewOnly={true}
-        />
+        {!project && (
+          <FormInput
+            form={form}
+            name="worker"
+            label="Worker"
+            placeholder="Worker"
+            viewOnly={true}
+          />
+        )}
+
         {role === "laborer" && (
           <FormSelect
             form={form}
@@ -95,15 +157,55 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker }) => {
             viewOnly={viewOnly}
           />
         )}
-
-        <Button
-          disabled={viewOnly}
-          className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
-          type={viewOnly ? "button" : "submit"}
-          // onClick={() => viewOnly && setOpen(false)}
-        >
-          {viewOnly ? "Close" : "Submit"}
-        </Button>
+        {project && project.typeOfService !== "" && (
+          <FormSelect
+            form={form}
+            name="service"
+            label="Service"
+            placeholder="Select a Service"
+            options={services}
+            viewOnly={viewOnly}
+          />
+        )}
+        {project ? (
+          <div className="flex gap-4">
+            <Button
+              className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
+              type="button"
+              onClick={() =>
+                updateProjectStatus({
+                  newStatus: "cancelled",
+                  notificationTitle: "Project Declined",
+                  notificationContent: "Your project request are declined. ",
+                })
+              }
+            >
+              Cancel
+            </Button>
+            <Button
+              className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+              type="button"
+              onClick={() =>
+                updateProjectStatus({
+                  newStatus: "inProgress",
+                  notificationTitle: "Project Accepted",
+                  notificationContent: "Your project request are accepted. ",
+                })
+              }
+            >
+              Accept
+            </Button>
+          </div>
+        ) : (
+          <Button
+            disabled={viewOnly}
+            className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+            type={viewOnly ? "button" : "submit"}
+            onClick={() => viewOnly && setOpen(false)}
+          >
+            {viewOnly ? "Close" : "Submit"}
+          </Button>
+        )}
       </form>
     </Form>
   );

@@ -10,7 +10,7 @@ const Dashboard = () => {
   const { data: user, isLoading } = useQuery(["user"], async () => {
     const response = await axios.get("/api/auth/me");
 
-    return response;
+    return response.data;
   });
 
   const { data: users, isLoading: usersLoading } = useQuery(
@@ -27,7 +27,7 @@ const Dashboard = () => {
         <div className="flex flex-col justify-center items-center">
           {!isLoading ? (
             <Label className="text-2xl font-bold text-slate-900">
-              Hello, {user.data["firstName"] + " " + user.data["lastName"]}
+              Hello, {user.firstName + " " + user.lastName}
             </Label>
           ) : null}
           <Label className="text-slate-500">

@@ -10,20 +10,29 @@ import { useState } from "react";
 import { Button } from "./ui/button";
 import { PlusCircle } from "lucide-react";
 
-const ProjectRequestDialog = ({ viewOnly = false, role, worker }) => {
+const ProjectRequestDialog = ({
+  children,
+  viewOnly = false,
+  role,
+  worker,
+  project,
+}) => {
   const [open, setOpen] = useState(false);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          onClick={(e) => e.stopPropagation()}
-          variant="outline"
-          className="float-right items-center flex gap-2"
-        >
-          <PlusCircle size={24} strokeWidth={1} />
-          <span>Request Service</span>
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button
+            onClick={(e) => e.stopPropagation()}
+            variant="outline"
+            className="float-right items-center flex gap-2"
+          >
+            <PlusCircle size={24} strokeWidth={1} />
+            <span>Request Service</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -34,6 +43,7 @@ const ProjectRequestDialog = ({ viewOnly = false, role, worker }) => {
           viewOnly={viewOnly}
           role={role}
           worker={worker}
+          project={project}
         />
       </DialogContent>
     </Dialog>
