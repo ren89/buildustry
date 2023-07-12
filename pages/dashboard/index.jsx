@@ -1,31 +1,28 @@
-import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@radix-ui/react-label";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import Image from "next/image";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import Rating from "@/components/rating";
+import DashboardLayout from "@/components/dashboard-layout";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UserTable, userColumns } from "@/components/user-table";
 
-const tempWorkers = [
+export const workers = [
   {
     name: "John Doe",
     rating: 5,
+    services: ["Bakla", "Adik"],
+    role: "contractor",
   },
   {
     name: "John Allen",
     rating: 5,
+    services: ["Shabu"],
+    role: "laborer",
   },
   {
     name: "Calvin",
     rating: 3.5,
+    services: ["Homophobia", "Racism"],
+    role: "contractor",
   },
 ];
 
@@ -35,87 +32,40 @@ const Dashboard = () => {
 
     return response;
   });
-  console;
 
   return (
-    <main className="min-h-screen flex flex-col  items-center">
-      {!isLoading ? (
-        <Label className="text-2xl font-bold text-slate-900">
-          Hello, {user.data["firstName"] + " " + user.data["lastName"]}
-        </Label>
-      ) : null}
-      <Label className="text-slate-500">
-        Welcome to Buildustry! What are you looking for?
-      </Label>
-      <WorkerTable workers={tempWorkers} />
-      {/* HomePage1 */}
-      {/* <div className="flex mt-10">
-        <CustomCard
-          icon="/images/frame.png"
-          heading="Contractors"
-          content="Get in touch with the best contractors in the industry"
-        />
-        <CustomCard
-          icon="/images/hard-hat.png"
-          heading="Laborers"
-          content="Contact the best individuals for your specific needs"
-        />
-      </div> */}
-      {/* <pre>{JSON.stringify(user?.data, null, 2)}</pre> */}
-    </main>
-  );
-};
-
-const CustomCard = ({ icon, heading, content }) => {
-  return (
-    <Card className="w-[250px] mx-2 p-2">
-      <CardContent className="flex flex-col items-center justify-center">
-        <Image src={icon} alt="Building" width={100} height={100} />
-        <Label className="text-2xl font-bold text-slate-900">{heading}</Label>
-        <Label className="text-sm text-slate-500 text-center">{content}</Label>
-      </CardContent>
-    </Card>
-  );
-};
-
-const WorkerTable = (workers) => {
-  console.log(workers.workers);
-  return (
-    <Card className="w-[850px]">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Rating</TableHead>
-            <TableHead></TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {workers.workers.map((worker) => {
-            return (
-              <TableRow key={worker.name}>
-                <TableCell className="font-medium">{worker.name}</TableCell>
-                <TableCell>
-                  <Rating value={worker.rating} />
-                </TableCell>
-                <TableCell className="text-right">
-                  <Button className="bg-white text-black py-2">
-                    <Image
-                      src="/images/send.png"
-                      alt="Building"
-                      width={24}
-                      height={24}
-                      className="mr-4"
-                    />
-                    Message
-                  </Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </Card>
+    <DashboardLayout>
+      <section className="flex flex-col items-center col-span-full h-fit">
+        <div className="flex flex-col justify-center items-center">
+          {!isLoading ? (
+            <Label className="text-2xl font-bold text-slate-900">
+              Hello, {user.data["firstName"] + " " + user.data["lastName"]}
+            </Label>
+          ) : null}
+          <Label className="text-slate-500">
+            Welcome to Buildustry! What are you looking for?
+          </Label>
+        </div>
+      </section>
+      <div className="col-span-full flex justify-center">
+        <Tabs defaultValue="contractors">
+          <TabsList>
+            <TabsTrigger value="contractors">Contractors</TabsTrigger>
+            <TabsTrigger value="laborers">Laborers</TabsTrigger>
+          </TabsList>
+          <TabsContent value="contractors">
+            <UserTable
+              data={workers}
+              columns={userColumns}
+              filter={["services"]}
+            />
+          </TabsContent>
+          <TabsContent value="laborers">
+            <UserTable data={workers} columns={userColumns} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </DashboardLayout>
   );
 };
 

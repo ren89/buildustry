@@ -1,0 +1,57 @@
+import DashboardLayout from "@/components/dashboard-layout";
+import { Label } from "@/components/ui/label";
+import { workers } from ".";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import WorkerProfileDialog from "@/components/worker-profile-dialog";
+
+const Team = () => {
+  return (
+    <DashboardLayout>
+      <section className="flex flex-col items-center col-span-full h-fit">
+        <Label className="text-2xl font-bold text-slate-900">My Team</Label>
+      </section>
+      <section className="flex flex-col items-center col-span-full h-fit">
+        <div className="flex gap-4">
+          <Card className="min-w-[18rem]">
+            <CardHeader className="font-bold text-lg">Contractors</CardHeader>
+            <CardContent className="space-y-3">
+              {workers.map((worker, index) => {
+                return (
+                  <div
+                    className="flex justify-between items-center"
+                    key={index}
+                  >
+                    <div>
+                      <p>{worker.name}</p>
+                    </div>
+                    <WorkerProfileDialog />
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+          <Card className="min-w-[18rem]">
+            <CardHeader className="font-bold text-lg">Laborers</CardHeader>
+            <CardContent className="space-y-3">
+              {workers.map((worker, index) => {
+                return (
+                  <div
+                    className="flex justify-between items-center"
+                    key={index}
+                  >
+                    <div>
+                      <p>{worker.name}</p>
+                    </div>
+                    <WorkerProfileDialog />
+                  </div>
+                );
+              })}
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+    </DashboardLayout>
+  );
+};
+
+export default Team;

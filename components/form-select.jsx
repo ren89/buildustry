@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/select";
 import { FormControl, FormField, FormItem, FormLabel } from "./ui/form";
 
-const FormSelect = ({ form, placeholder, label, name, options }) => {
+const FormSelect = ({ form, placeholder, label, name, options, viewOnly }) => {
   return (
     <FormField
       control={form.control}
@@ -16,7 +16,11 @@ const FormSelect = ({ form, placeholder, label, name, options }) => {
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              disabled={viewOnly}
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+            >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>
