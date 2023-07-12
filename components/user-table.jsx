@@ -1,7 +1,6 @@
 import {
   flexRender,
   getCoreRowModel,
-  getFilteredRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import {
@@ -12,7 +11,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import Rating from "./rating";
 import ProjectRequestDialog from "./project-request-dialog";
@@ -21,6 +19,11 @@ export const userColumns = [
   {
     accessorKey: "name",
     header: "Name",
+    cell: ({ row }) => {
+      const name = `${row.original.firstName} ${row.original.lastName}`;
+
+      return <span>{name}</span>;
+    },
   },
   {
     accessorKey: "rating",
