@@ -21,10 +21,20 @@ model User {
   contactNumber String
   role          String      @default("client")
   rating        Float        @default(0)
+  notifications Notification[]
   projects      Project[]
   portfolioId   String?     @unique
   portfolio     Portfolio?  @relation("userPortfolio", fields: [portfolioId], references: [id])
-  
+}
+
+model Notification {
+  id            String      @id @default(cuid())
+  title         String
+  content       String
+  created_at    DateTime    @default(now())
+  isRead        Boolean     @default(false)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
 }
 
 model Project {
@@ -43,15 +53,13 @@ model Portfolio {
   id              String    @id @default(cuid())
   user            User?     @relation("userPortfolio")
   userId          String?
+  rating          Float?    @default(0)
   projects        CompletedProject[]
 }
-
-
 
 model CompletedProject {
   id              Int       @id @default(autoincrement())
   name            String
-  rating          Float?    @default(0)
   images          Image[]
   portfolio       Portfolio @relation(fields: [portfolioId], references: [id])
   portfolioId     String

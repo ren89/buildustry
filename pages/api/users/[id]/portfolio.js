@@ -62,14 +62,14 @@ const createPortfolioByUserId = authMiddleware(async (req, res) => {
 		return;
 	}
 
-	const { projects } = req.body;
+	const { rating, projects } = req.body;
 	const createdPortfolio = await prisma.portfolio.create({
 		data: {
 			userId,
+			rating,
 			projects: {
 				create: projects.map((project) => ({
 					name: project.name,
-					rating: project.rating,
 					images: {
 						create: project.images.map((url) => ({
 							url,
@@ -96,7 +96,7 @@ const createPortfolioByUserId = authMiddleware(async (req, res) => {
 const updatePortfolioByUserId = authMiddleware(async (req, res) => {
 	const { id: userId } = req.user;
 	const { id } = req.query;
-	const { completedProjects } = req.body;
+	const { rating, completedProjects } = req.body;
 
 	if (userId !== id) {
 		res.status(203).json({ message: 'Unathorized access' });
@@ -122,24 +122,34 @@ const updatePortfolioByUserId = authMiddleware(async (req, res) => {
 		return;
 	}
 
-	// Create new completed projects
-	const createdCompletedProjects = [];
+	if (completedProjects) {
+		// Create new completed projects
+		const createdCompletedProjects = [];
 
-	for (const project of completedProjects) {
-		const createdProject = await prisma.completedProject.create({
-			data: {
-				name: project.name,
-				rating: project.rating,
-				portfolioId: existingPortfolio.id,
-				images: {
-					create: project.images.map((url) => ({
-						url,
-					})),
+		for (const project of completedProjects) {
+			const createdProject = await prisma.completedProject.create({
+				data: {
+					name: project.name,
+					portfolioId: existingPortfolio.id,
+					images: {
+						create: project.images.map((url) => ({
+							url,
+						})),
+					},
 				},
-			},
-		});
+			});
 
-		createdCompletedProjects.push(createdProject);
+			createdCompletedProjects.push(createdProject);
+		}
+	}
+
+	if (rating) {
+		await prisma.portfolio.updateMany({
+			where: {
+				userId,
+			},
+			data: { rating },
+		});
 	}
 
 	// Retrieve the updated portfolio with the newly created completed projects
