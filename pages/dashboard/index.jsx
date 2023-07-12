@@ -9,19 +9,16 @@ export const workers = [
   {
     name: "John Doe",
     rating: 5,
-    services: ["Bakla", "Adik"],
     role: "contractor",
   },
   {
     name: "John Allen",
     rating: 5,
-    services: ["Shabu"],
     role: "laborer",
   },
   {
     name: "Calvin",
     rating: 3.5,
-    services: ["Homophobia", "Racism"],
     role: "contractor",
   },
 ];
@@ -54,11 +51,7 @@ const Dashboard = () => {
             <TabsTrigger value="laborers">Laborers</TabsTrigger>
           </TabsList>
           <TabsContent value="contractors">
-            <UserTable
-              data={workers}
-              columns={userColumns}
-              filter={["services"]}
-            />
+            <UserTable data={workers} columns={userColumns} />
           </TabsContent>
           <TabsContent value="laborers">
             <UserTable data={workers} columns={userColumns} />
