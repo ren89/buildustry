@@ -15,7 +15,7 @@ const newProjectSchema = z.object({
   floors: z.coerce.number().min(1, { message: "Floor is required" }),
 });
 
-const NewProjectForm = ({ setOpen }) => {
+const NewProjectForm = ({ setOpen, viewOnly }) => {
   const form = useForm({
     resolver: zodResolver(newProjectSchema),
     defaultValues: {
@@ -29,11 +29,15 @@ const NewProjectForm = ({ setOpen }) => {
   const { toast } = useToast();
 
   function onSubmit(values) {
-    toast({
-      title: "Request Sent",
-      description:
-        "Job request has been forwarded to the person you have messaged.",
-    });
+    if (!viewOnly) {
+      // TODO add mutation
+
+      toast({
+        title: "Request Sent",
+        description:
+          "Job request has been forwarded to the person you have messaged.",
+      });
+    }
 
     setOpen(false);
   }
@@ -49,12 +53,14 @@ const NewProjectForm = ({ setOpen }) => {
           name="name"
           label="Project Name"
           placeholder="Project Name"
+          viewOnly={viewOnly}
         />
         <FormInput
           form={form}
           name="worker"
           label="Worker"
           placeholder="Worker"
+          viewOnly={viewOnly}
         />
         <FormSelect
           form={form}
@@ -66,6 +72,7 @@ const NewProjectForm = ({ setOpen }) => {
             { label: "App Development", value: "app" },
             { label: "Graphic Design", value: "gd" },
           ]}
+          viewOnly={viewOnly}
         />
         <FormInput
           form={form}
@@ -73,6 +80,7 @@ const NewProjectForm = ({ setOpen }) => {
           label="Square Meters"
           placeholder="Square Meters"
           type="number"
+          viewOnly={viewOnly}
         />
         <FormInput
           form={form}
@@ -80,10 +88,15 @@ const NewProjectForm = ({ setOpen }) => {
           label="Floors"
           placeholder="Floors"
           type="number"
+          viewOnly={viewOnly}
         />
 
-        <Button className="bg-emerald-500 w-full mt-4" type="submit">
-          Submit
+        <Button
+          className="bg-emerald-500 w-full mt-4"
+          type={viewOnly ? "button" : "submit"}
+          onClick={() => viewOnly && setOpen(false)}
+        >
+          {viewOnly ? "Close" : "Submit"}
         </Button>
       </form>
     </Form>

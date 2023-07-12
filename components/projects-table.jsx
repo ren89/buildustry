@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import ProjectRequestDialog from "./project-request-dialog";
 
 export const statusColors = {
   "for review": "blue",
@@ -67,12 +68,7 @@ export const projectsColumns = [
   {
     id: "actions",
     cell: () => {
-      return (
-        <Button variant="outline" className="float-right flex gap-2">
-          <Eye size={24} strokeWidth={1.5} />
-          <span>View</span>
-        </Button>
-      );
+      return <ProjectRequestDialog viewOnly={true} />;
     },
   },
 ];
