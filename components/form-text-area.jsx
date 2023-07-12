@@ -5,9 +5,9 @@ import {
   FormLabel,
   FormMessage,
 } from "./ui/form";
-import { Input } from "./ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
-const FormInput = ({ form, placeholder, label, name, type, viewOnly }) => {
+const FormTextArea = ({ form, placeholder, label, name, type, viewOnly }) => {
   return (
     <FormField
       control={form.control}
@@ -16,7 +16,7 @@ const FormInput = ({ form, placeholder, label, name, type, viewOnly }) => {
         <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input
+            <Textarea
               disabled={viewOnly}
               type={type}
               placeholder={placeholder}
@@ -30,4 +30,4 @@ const FormInput = ({ form, placeholder, label, name, type, viewOnly }) => {
   );
 };
 
-export default FormInput;
+export default FormTextArea;
