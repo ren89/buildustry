@@ -29,7 +29,7 @@ const getProjectById = async (req, res) => {
 const updateUserById = authMiddleware(async (req, res) => {
 	const { id } = req.query;
 
-	const { typeOfService, name, description, status } = req.body;
+	const { typeOfService, name, description, status, dateFinished } = req.body;
 
 	const { id: clientId } = req.user;
 
@@ -54,6 +54,7 @@ const updateUserById = authMiddleware(async (req, res) => {
 		name: name || project.name,
 		description: description || project.description,
 		status: status || project.status,
+		dateFinished: dateFinished || project.dateFinished,
 	};
 
 	const updatedProject = await prisma.project.update({

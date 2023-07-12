@@ -19,6 +19,7 @@ const authMiddleware = (handler) => async (req, res) => {
 	} catch (error) {
 		// Handle token verification errors or unauthorized access
 		res.status(401).json({ error: 'Unauthorized' });
+		console.error(error);
 	}
 };
 
