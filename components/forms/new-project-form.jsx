@@ -15,7 +15,7 @@ const newProjectSchema = z.object({
   floors: z.coerce.number().min(1, { message: "Floor is required" }),
 });
 
-const NewProjectForm = ({ setOpen, viewOnly }) => {
+const NewProjectForm = ({ setOpen, viewOnly, role }) => {
   const form = useForm({
     resolver: zodResolver(newProjectSchema),
     defaultValues: {
@@ -62,18 +62,20 @@ const NewProjectForm = ({ setOpen, viewOnly }) => {
           placeholder="Worker"
           viewOnly={viewOnly}
         />
-        <FormSelect
-          form={form}
-          name="service"
-          label="Service"
-          placeholder="Select a Service"
-          options={[
-            { label: "Website Design", value: "web" },
-            { label: "App Development", value: "app" },
-            { label: "Graphic Design", value: "gd" },
-          ]}
-          viewOnly={viewOnly}
-        />
+        {role === "laborer" && (
+          <FormSelect
+            form={form}
+            name="service"
+            label="Service"
+            placeholder="Select a Service"
+            options={[
+              { label: "Website Design", value: "web" },
+              { label: "App Development", value: "app" },
+              { label: "Graphic Design", value: "gd" },
+            ]}
+            viewOnly={viewOnly}
+          />
+        )}
         <FormInput
           form={form}
           name="sqm"

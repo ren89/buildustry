@@ -42,8 +42,10 @@ export const userColumns = [
   },
   {
     id: "actions",
-    cell: () => {
-      return <ProjectRequestDialog />;
+    cell: ({ row }) => {
+      const role = row.original.role;
+
+      return <ProjectRequestDialog role={role} />;
     },
   },
 ];

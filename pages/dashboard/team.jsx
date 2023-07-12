@@ -2,8 +2,6 @@ import DashboardLayout from "@/components/dashboard-layout";
 import { Label } from "@/components/ui/label";
 import { workers } from ".";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Eye } from "lucide-react";
 import WorkerProfileDialog from "@/components/worker-profile-dialog";
 
 const Team = () => {

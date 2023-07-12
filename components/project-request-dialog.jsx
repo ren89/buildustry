@@ -10,7 +10,7 @@ import { Send } from "lucide-react";
 import { Button } from "./ui/button";
 import { useState } from "react";
 
-const ProjectRequestDialog = ({ viewOnly = false }) => {
+const ProjectRequestDialog = ({ viewOnly = false, role }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -25,7 +25,7 @@ const ProjectRequestDialog = ({ viewOnly = false }) => {
         <DialogHeader>
           <DialogTitle>Project</DialogTitle>
         </DialogHeader>
-        <NewProjectForm setOpen={setOpen} viewOnly={viewOnly} />
+        <NewProjectForm setOpen={setOpen} viewOnly={viewOnly} role={role} />
       </DialogContent>
     </Dialog>
   );

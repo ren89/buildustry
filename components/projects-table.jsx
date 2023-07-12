@@ -43,7 +43,7 @@ export const projectsColumns = [
     },
   },
   {
-    accessorKey: "worker",
+    accessorKey: "worker.name",
     header: "Worker",
   },
   {
@@ -67,8 +67,10 @@ export const projectsColumns = [
   },
   {
     id: "actions",
-    cell: () => {
-      return <ProjectRequestDialog viewOnly={true} />;
+    cell: ({ row }) => {
+      const role = row.original.worker.role;
+
+      return <ProjectRequestDialog viewOnly={true} role={role} />;
     },
   },
 ];

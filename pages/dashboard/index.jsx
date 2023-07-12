@@ -10,16 +10,19 @@ export const workers = [
     name: "John Doe",
     rating: 5,
     services: ["Bakla", "Adik"],
+    role: "contractor",
   },
   {
     name: "John Allen",
     rating: 5,
     services: ["Shabu"],
+    role: "laborer",
   },
   {
     name: "Calvin",
     rating: 3.5,
     services: ["Homophobia", "Racism"],
+    role: "contractor",
   },
 ];
 

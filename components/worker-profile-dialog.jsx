@@ -48,7 +48,7 @@ const WorkerProfileDialog = () => {
               </div>
             </div>
             <div className="self-start">
-              <ProjectRequestDialog />
+              <ProjectRequestDialog role="contractor" /> {/* Worker Role */}
             </div>
           </div>
           <Separator />

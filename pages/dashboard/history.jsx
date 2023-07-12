@@ -6,21 +6,30 @@ const jobs = [
   {
     name: "Website Design",
     dateFinished: "2023-07-11",
-    worker: "John Smith",
+    worker: {
+      name: "John Smith",
+      role: "contractor",
+    },
     service: "Web Design",
     status: "completed",
   },
   {
     name: "App Development",
     dateFinished: "2023-07-12",
-    worker: "Jane Doe",
+    worker: {
+      name: "Jane Smith",
+      role: "contractor",
+    },
     service: "App Development",
     status: "pending",
   },
   {
     name: "Graphic Design",
     dateFinished: "2023-07-13",
-    worker: "Michael Jones",
+    worker: {
+      name: "John Doe",
+      role: "laborer",
+    },
     service: "Graphic Design",
     status: "completed",
   },
