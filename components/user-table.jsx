@@ -1,5 +1,3 @@
-import { Send } from "lucide-react";
-import { Button } from "./ui/button";
 import {
   flexRender,
   getCoreRowModel,
@@ -17,6 +15,7 @@ import {
 import { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import Rating from "./rating";
+import ProjectRequestDialog from "./project-request-dialog";
 
 export const userColumns = [
   {
@@ -44,12 +43,7 @@ export const userColumns = [
   {
     id: "actions",
     cell: () => {
-      return (
-        <Button variant="outline" className="float-right flex gap-2">
-          <Send size={24} strokeWidth={1} />
-          <span>Message</span>
-        </Button>
-      );
+      return <ProjectRequestDialog />;
     },
   },
 ];
