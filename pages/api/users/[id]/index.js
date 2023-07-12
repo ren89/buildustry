@@ -12,7 +12,7 @@ const getUserById = async (req, res) => {
 
 	const user = await prisma.user.findUnique({
 		where: {
-			id: id,
+			id,
 		},
 	});
 
@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
 
 //  @desc   Update user
 //  @route  PUT /api/users/:id
-//  @access Private/Admin
+//  @access Private
 const updateUserById = async (req, res) => {
 	const { id } = req.query;
 
@@ -72,7 +72,7 @@ const updateUserById = async (req, res) => {
 
 //  @desc   Delete user
 //  @route  DELETE /api/users/:id
-//  @access Private/Admin
+//  @access Private
 const deleteUserById = async (req, res) => {
 	const { id } = req.query;
 	const user = await prisma.user.findUnique({
