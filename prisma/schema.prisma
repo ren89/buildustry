@@ -12,26 +12,62 @@ datasource db {
 
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   firstName     String?
   lastName      String?
-  username      String    @unique
-  password      String    @default("password-excluded")
-  email         String    @unique
+  username      String      @unique
+  password      String      @default("password-excluded")
+  email         String      @unique
   contactNumber String
-  role          String    @default("client")
-  rating        Int       @default(0)
+  role          String      @default("client")
+  rating        Float        @default(0)
+  notifications Notification[]
   projects      Project[]
+  portfolioId   String?     @unique
+  portfolio     Portfolio?  @relation("userPortfolio", fields: [portfolioId], references: [id])
+}
+
+model Notification {
+  id            String      @id @default(cuid())
+  title         String
+  content       String
+  created_at    DateTime    @default(now())
+  isRead        Boolean     @default(false)
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
 }
 
 model Project {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   name            String
   description     String
   typeOfService   String?
-  status          String   @default("pending")
+  status          String    @default("pending")
   clientId        String
-  client          User     @relation(fields: [clientId], references: [id])
+  client          User      @relation(fields: [clientId], references: [id])
   workerId        String
+  dateFinished    DateTime?
 }
 
+model Portfolio {
+  id              String    @id @default(cuid())
+  user            User?     @relation("userPortfolio")
+  userId          String?
+  rating          Float?    @default(0)
+  projects        CompletedProject[]
+}
+
+model CompletedProject {
+  id              Int       @id @default(autoincrement())
+  name            String
+  images          Image[]
+  portfolio       Portfolio @relation(fields: [portfolioId], references: [id])
+  portfolioId     String
+}
+
+model Image {
+  id              Int       @id @default(autoincrement())
+  url             String?
+  project         CompletedProject @relation(fields: [projectId], references: [id])
+  projectId       Int
+}
