@@ -6,9 +6,9 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import NewProjectForm from "./forms/new-project-form";
-import { Send } from "lucide-react";
-import { Button } from "./ui/button";
 import { useState } from "react";
+import { Button } from "./ui/button";
+import { PlusCircle } from "lucide-react";
 
 const ProjectRequestDialog = ({ viewOnly = false, role, worker }) => {
   const [open, setOpen] = useState(false);
@@ -16,9 +16,13 @@ const ProjectRequestDialog = ({ viewOnly = false, role, worker }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="float-right flex gap-2">
-          <Send size={24} strokeWidth={1} />
-          <span>Message</span>
+        <Button
+          onClick={(e) => e.stopPropagation()}
+          variant="outline"
+          className="float-right items-center flex gap-2"
+        >
+          <PlusCircle size={24} strokeWidth={1} />
+          <span>Request Service</span>
         </Button>
       </DialogTrigger>
       <DialogContent>

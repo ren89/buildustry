@@ -13,7 +13,10 @@ import {
 } from "@/components/ui/table";
 import { Card } from "./ui/card";
 import Rating from "./rating";
-import ProjectRequestDialog from "./project-request-dialog";
+import WorkerProfileDialog from "./worker-profile-dialog";
+import { Send } from "lucide-react";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 export const userColumns = [
   {
@@ -37,10 +40,18 @@ export const userColumns = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const role = row.original.role;
-      const worker = row.original;
+      const worker = row.original; // TODO use id for navigation
 
-      return <ProjectRequestDialog role={role} worker={worker} />;
+      return (
+        <Link
+          onClick={(e) => e.stopPropagation()}
+          href={`/dashboard/messages`}
+          className="float-right flex gap-2 px-4 py-2 border border-slate-300 rounded-md hover:bg-slate-200"
+        >
+          <Send size={24} strokeWidth={1} />
+          <span>Message</span>
+        </Link>
+      );
     },
   },
 ];
@@ -76,16 +87,21 @@ export function UserTable({ data, columns }) {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
+              <WorkerProfileDialog key={row.id} worker={row.original}>
+                <TableRow
+                  data-state={row.getIsSelected() && "selected"}
+                  className="cursor-pointer"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              </WorkerProfileDialog>
             ))
           ) : (
             <TableRow>
