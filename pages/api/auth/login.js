@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';

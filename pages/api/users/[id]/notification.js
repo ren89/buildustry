@@ -1,4 +1,3 @@
-import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
 import authMiddleware from '@/middlewares/authMiddleware';
 import { prisma } from '@/lib/db';

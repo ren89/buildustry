@@ -1,5 +1,4 @@
 import asyncHandler from '@/middlewares/asyncHandler';
-import { PrismaClient } from '@prisma/client';
 import { getCookie } from 'cookies-next';
 import jwt from 'jsonwebtoken';
 import { prisma } from '@/lib/db';

@@ -12,7 +12,7 @@ model User {
   firstName     String?
   lastName      String?
   username      String      @unique
-  password      String      @default("password-excluded")
+  password      String      
   email         String      @unique
   contactNumber String
   role          String      @default("client")
