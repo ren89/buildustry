@@ -5,7 +5,7 @@ import { Star } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 
-const Rate = ({ workerId, setOpen }) => {
+const Rate = ({ workerId, setOpen, projectId }) => {
   const maxStars = 5;
   const [tempStar, setTempStar] = useState(0);
   const [rating, setRating] = useState(0);
@@ -24,7 +24,6 @@ const Rate = ({ workerId, setOpen }) => {
     },
     {
       onSuccess() {
-        console.log("asd");
         setOpen(false);
       },
     },
@@ -32,6 +31,12 @@ const Rate = ({ workerId, setOpen }) => {
       enabled: !!user,
     }
   );
+
+  const { mutate: updateStatus } = useMutation(async () => {
+    await axios.put(`/api/projects/${projectId}`, {
+      isRated: true,
+    });
+  });
 
   const onHover = (value) => {
     setTempStar(value);
@@ -65,6 +70,7 @@ const Rate = ({ workerId, setOpen }) => {
         type="button"
         onClick={() => {
           addRating();
+          updateStatus();
         }}
       >
         Submit

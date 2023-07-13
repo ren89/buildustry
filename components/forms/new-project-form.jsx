@@ -176,7 +176,14 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
 
         {project ? (
           project.status === "completed" ? (
-            <Rate workerId={project.workerId} setOpen={setOpen} />
+            user.role === "client" &&
+            !project.isRated && (
+              <Rate
+                workerId={project.workerId}
+                setOpen={setOpen}
+                projectId={project.id}
+              />
+            )
           ) : project.status === "cancelled" ? null : project.status !==
             "inProgress" ? (
             <div className="flex gap-4">

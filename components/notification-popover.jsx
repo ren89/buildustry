@@ -67,7 +67,7 @@ const NotificationPopover = () => {
   );
 
   const unreadCount = useMemo(() => {
-    if (typeof notifications !== "object") {
+    if (!notifications?.message) {
       return notifications?.reduce((count, notification) => {
         if (!notification.isRead) {
           return count + 1;
@@ -98,7 +98,7 @@ const NotificationPopover = () => {
         <NotificationList isLoading={isLoading}>
           <h4 className="font-bold text-lg">Notifications</h4>
 
-          {typeof notifications !== "object" ? (
+          {!notifications?.message ? (
             notifications?.map((notification) => (
               <NotificationListItem
                 key={notification.id}
