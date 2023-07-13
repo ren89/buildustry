@@ -17,11 +17,13 @@ model User {
   contactNumber    String
   role             String         @default("client")
   rating           Float          @default(0)
+  ratingCount      Int            @default(0)
   portfolioId      String?        @unique
   receivedMessages Message[]      @relation("Receiver")
   sentMessages     Message[]      @relation("Sender")
+  client           Project[]      @relation("Client")
+  worker           Project[]      @relation("Worker")
   notifications    Notification[]
-  projects         Project[]
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
 }
 
@@ -31,9 +33,11 @@ model Project {
   description   String
   typeOfService String?
   status        String  @default("pending")
+  client        User    @relation("Client", fields: [clientId], references: [id])
+  worker        User    @relation("Worker", fields: [workerId], references: [id])
   clientId      String
   workerId      String
-  client        User    @relation(fields: [clientId], references: [id])
+ 
 }
 
 model Notification {
@@ -49,7 +53,6 @@ model Notification {
 model Portfolio {
   id       String             @id @default(cuid())
   userId   String?
-  rating   Float?             @default(0)
   projects CompletedProject[]
   user     User?              @relation("userPortfolio")
 }

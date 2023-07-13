@@ -12,6 +12,9 @@ const getProjects = async (req, res) => {
 			client: {
 				select: userHelper,
 			},
+			worker: {
+				select: userHelper,
+			},
 		},
 	});
 	res.status(200).json(projects);
@@ -35,6 +38,9 @@ const createProject = authMiddleware(async (req, res) => {
 		},
 		include: {
 			client: {
+				select: userHelper,
+			},
+			worker: {
 				select: userHelper,
 			},
 		},
