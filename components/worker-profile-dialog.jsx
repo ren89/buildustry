@@ -12,6 +12,9 @@ import { Separator } from "./ui/separator";
 import ProjectRequestDialog from "./project-request-dialog";
 
 export const WorkerProfileContent = ({ worker }) => {
+  const computeRating = (rating, count) => {
+    return rating / count;
+  };
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4 justify-between">
@@ -28,7 +31,13 @@ export const WorkerProfileContent = ({ worker }) => {
             <p className="text-xl font-bold text-emerald-500">{`${worker.firstName} ${worker.lastName}`}</p>
             <p className="text-slate-500 text-sm">{worker.email}</p>
             <p className="text-medium float-right">{worker.contactNumber}</p>
-            <Rating value={worker.rating} />
+            <Rating
+              value={
+                worker.ratingCount === 0
+                  ? 0
+                  : computeRating(worker.rating, worker.ratingCount)
+              }
+            />
           </div>
         </div>
         <div className="self-start">

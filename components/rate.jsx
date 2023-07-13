@@ -1,19 +1,45 @@
 import { cn } from "@/lib/utils";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { Star } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 
-const Rate = () => {
+const Rate = ({ workerId, setOpen }) => {
   const maxStars = 5;
   const [tempStar, setTempStar] = useState(0);
-  const [star, setStar] = useState(0);
+  const [rating, setRating] = useState(0);
+
+  const { data: user } = useQuery(["user"], async () => {
+    const response = await axios.get("/api/auth/me");
+
+    return response.data;
+  });
+
+  const { mutate: addRating } = useMutation(
+    async () => {
+      await axios.put(`/api/users/${workerId}`, {
+        rating: rating,
+      });
+    },
+    {
+      onSuccess() {
+        console.log("asd");
+        setOpen(false);
+      },
+    },
+    {
+      enabled: !!user,
+    }
+  );
 
   const onHover = (value) => {
     setTempStar(value);
   };
   const onClick = (value) => {
-    setStar(value);
+    setRating(value);
   };
+
   return (
     <div className="mt-6">
       <p className="justify-center">How was the service?</p>
@@ -26,7 +52,7 @@ const Rate = () => {
             className={cn(
               "fill-slate-300  text-transparent cursor-pointer",
               tempStar > index && "fill-yellow-500",
-              star > index && "fill-yellow-500"
+              rating > index && "fill-yellow-500"
             )}
             onMouseEnter={() => onHover(index + 1)}
             onMouseLeave={() => onHover(0)}
@@ -37,7 +63,9 @@ const Rate = () => {
       <Button
         className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
         type="button"
-        onClick={() => {}}
+        onClick={() => {
+          addRating();
+        }}
       >
         Submit
       </Button>

@@ -21,9 +21,9 @@ model User {
   portfolioId      String?        @unique
   receivedMessages Message[]      @relation("Receiver")
   sentMessages     Message[]      @relation("Sender")
-  client           Project[]      @relation("Client")
-  worker           Project[]      @relation("Worker")
   notifications    Notification[]
+  worker           Project[]      @relation("Worker")
+  client           Project[]      @relation("Client")
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
 }
 
@@ -33,12 +33,11 @@ model Project {
   description   String
   typeOfService String?
   status        String  @default("pending")
-  client        User    @relation("Client", fields: [clientId], references: [id])
-  worker        User    @relation("Worker", fields: [workerId], references: [id])
   clientId      String
   workerId      String
   isRated       Boolean @default(false)
- 
+  worker        User    @relation("Worker", fields: [workerId], references: [id])
+  client        User    @relation("Client", fields: [clientId], references: [id])
 }
 
 model Notification {

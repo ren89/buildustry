@@ -17,6 +17,8 @@ import { cn } from "@/lib/utils";
 import ProjectRequestDialog from "./project-request-dialog";
 import { useEffect, useState } from "react";
 import ProjectRowActionsDropdown from "./project-row-actions-dropdown";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const statusColors = {
   "for review": "blue",
@@ -51,8 +53,9 @@ export const projectsColumns = [
   {
     accessorKey: "worker",
     header: "Worker",
-    cell: ({ row }) => 
-      const name = row.original.worker.name;
+    cell: ({ row }) => {
+      const name =
+        row.original.worker.firstName + " " + row.original.worker.lastName;
 
       return name;
     },
@@ -94,6 +97,21 @@ export const projectsColumns = [
 
 export function ProjectsTable({ data, columns, filter = [], history }) {
   const [columnFilters, setColumnFilters] = useState(filter);
+  const { data: user } = useQuery(
+    ["user"],
+    async () => {
+      const response = await axios.get("/api/auth/me");
+
+      return response.data;
+    },
+    {
+      onSuccess() {
+        if (user.role === "contractor") {
+          table.getColumn("service").toggleVisibility(false);
+        }
+      },
+    }
+  );
 
   const table = useReactTable({
     data,
@@ -106,9 +124,10 @@ export function ProjectsTable({ data, columns, filter = [], history }) {
     },
   });
 
+  console.log(filter);
   useEffect(() => {
     filter.map((column) => table.getColumn(column).toggleVisibility(false));
-  }, [filter, table]);
+  }, [filter, table, user]);
   return (
     <Card className="w-[850px]">
       <Table>

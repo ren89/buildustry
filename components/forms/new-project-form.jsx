@@ -61,7 +61,6 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
 
   const { mutate: updateStatus } = useMutation(
     async (values) => {
-      console.log(values.status);
       await axios.put(`/api/projects/${values.id}`, {
         status: values.status,
       });
@@ -120,7 +119,6 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
       id: project.clientId,
     });
   }
-  console.log(project);
 
   return (
     <Form {...form}>
@@ -162,77 +160,77 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
             viewOnly={viewOnly}
           />
         )}
-        {project.typeOfService !== "" && project.typeOfService !== null && (
-          <FormSelect
-            form={form}
-            name="service"
-            label="Service"
-            placeholder="Select a Service"
-            options={services}
-            viewOnly={viewOnly}
-          />
-        )}
 
-        {project.status !== "completed" ? (
-          project ? (
-            project.status !== "inProgress" ? (
-              <div className="flex gap-4">
-                <Button
-                  className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
-                  type="button"
-                  onClick={() =>
-                    updateProjectStatus({
-                      newStatus: "cancelled",
-                      notificationTitle: "Project Declined",
-                      notificationContent:
-                        "Your project request are declined. ",
-                    })
-                  }
-                >
-                  Cancel
-                </Button>
-                <Button
-                  className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
-                  type="button"
-                  onClick={() =>
-                    updateProjectStatus({
-                      newStatus: "inProgress",
-                      notificationTitle: "Project Accepted",
-                      notificationContent:
-                        "Your project request are accepted. ",
-                    })
-                  }
-                >
-                  Accept
-                </Button>
-              </div>
-            ) : (
+        {project &&
+          project.typeOfService !== "" &&
+          project.typeOfService !== null && (
+            <FormSelect
+              form={form}
+              name="service"
+              label="Service"
+              placeholder="Select a Service"
+              options={services}
+              viewOnly={viewOnly}
+            />
+          )}
+
+        {project ? (
+          project.status === "completed" ? (
+            <Rate workerId={project.workerId} setOpen={setOpen} />
+          ) : project.status === "cancelled" ? null : project.status !==
+            "inProgress" ? (
+            <div className="flex gap-4">
+              <Button
+                className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
+                type="button"
+                onClick={() =>
+                  updateProjectStatus({
+                    newStatus: "cancelled",
+                    notificationTitle: "Project Declined",
+                    notificationContent: "Your project request are declined. ",
+                  })
+                }
+              >
+                Cancel
+              </Button>
               <Button
                 className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
                 type="button"
                 onClick={() =>
                   updateProjectStatus({
-                    newStatus: "completed",
-                    notificationTitle: "Project Completed",
-                    notificationContent: "Your project request are completed. ",
+                    newStatus: "inProgress",
+                    notificationTitle: "Project Accepted",
+                    notificationContent: "Your project request are accepted. ",
                   })
                 }
               >
-                Complete
+                Accept
               </Button>
-            )
+            </div>
           ) : (
             <Button
-              disabled={viewOnly}
               className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
-              type={viewOnly ? "button" : "submit"}
-              onClick={() => viewOnly && setOpen(false)}
+              type="button"
+              onClick={() =>
+                updateProjectStatus({
+                  newStatus: "completed",
+                  notificationTitle: "Project Completed",
+                  notificationContent: "Your project request are completed. ",
+                })
+              }
             >
-              {viewOnly ? "Close" : "Submit"}
+              Complete
             </Button>
           )
         ) : (
-          <Rate />
+          <Button
+            disabled={viewOnly}
+            className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+            type={viewOnly ? "button" : "submit"}
+            onClick={() => viewOnly && setOpen(false)}
+          >
+            {viewOnly ? "Close" : "Submit"}
+          </Button>
         )}
         {/* {project.status === "completed" && <Rate />} */}
       </form>
