@@ -25,7 +25,10 @@ const RowActionsDropdown = ({ worker }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
-              <Link href={`/dashboard/messages`} className="flex gap-2">
+              <Link
+                href={`/dashboard/messages/${worker.id}`}
+                className="flex gap-2"
+              >
                 <span>Message</span>
               </Link>
             </DropdownMenuItem>
