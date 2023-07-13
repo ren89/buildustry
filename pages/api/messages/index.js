@@ -5,9 +5,9 @@ import { createServer } from 'http';
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
 import authMiddleware from '@/middlewares/authMiddleware';
+import { prisma } from '@/lib/db';
 
 let io;
-const prisma = new PrismaClient();
 
 export const config = {
 	api: {

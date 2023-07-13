@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
 import authMiddleware from '@/middlewares/authMiddleware';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 //  @desc   Get single portfolio
 //  @route  GET /api/users/:id/portfolio

@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
 import encryptPassword from '@/utils/encryptPassword';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 //  @desc   Register user
 //  @route  GET /api/auth/register
