@@ -58,25 +58,7 @@ const createProject = authMiddleware(async (req, res) => {
 		},
 	});
 
-	const team = await prisma.team.findUnique({
-		where: {
-			teamLeaderId: clientId,
-		},
-	});
-
-	if (!team) {
-		res.status(200).json({ message: 'Team not found' });
-		return;
-	}
-
-	const worker = await prisma.worker.create({
-		data: {
-			teamId: team.id,
-			workerId,
-		},
-	});
-
-	if (worker && project) res.status(201).json(project);
+	res.status(201).json(project);
 });
 
 export default asyncHandler(async (req, res) => {
