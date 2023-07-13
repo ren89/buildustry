@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 const jobs = [
   {
     name: "Website Design",
-    dateFinished: "2023-07-11",
+    dateFinished: new Date("2023-07-11"),
     worker: {
       name: "John Smith",
       role: "contractor",
@@ -15,7 +15,7 @@ const jobs = [
   },
   {
     name: "App Development",
-    dateFinished: "2023-07-12",
+    dateFinished: new Date("2023-07-12"),
     worker: {
       name: "Jane Smith",
       role: "contractor",
@@ -25,7 +25,7 @@ const jobs = [
   },
   {
     name: "Graphic Design",
-    dateFinished: "2023-07-13",
+    dateFinished: new Date("2023-07-13"),
     worker: {
       name: "John Doe",
       role: "laborer",

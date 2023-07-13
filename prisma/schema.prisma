@@ -37,45 +37,44 @@ model Project {
 }
 
 model Notification {
-  id            String      @id @default(cuid())
-  title         String
-  content       String
-  created_at    DateTime    @default(now())
-  isRead        Boolean     @default(false)
-  userId        String
-  user          User        @relation(fields: [userId], references: [id])
+  id         String   @id @default(cuid())
+  title      String
+  content    String
+  created_at DateTime @default(now())
+  isRead     Boolean  @default(false)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
 }
 
-
 model Portfolio {
-  id              String    @id @default(cuid())
-  user            User?     @relation("userPortfolio")
-  userId          String?
-  rating          Float?    @default(0)
-  projects        CompletedProject[]
+  id       String             @id @default(cuid())
+  userId   String?
+  rating   Float?             @default(0)
+  projects CompletedProject[]
+  user     User?              @relation("userPortfolio")
 }
 
 model CompletedProject {
-  id              Int       @id @default(autoincrement())
-  name            String
-  images          Image[]
-  portfolio       Portfolio @relation(fields: [portfolioId], references: [id])
-  portfolioId     String
+  id          Int       @id @default(autoincrement())
+  name        String
+  portfolioId String
+  portfolio   Portfolio @relation(fields: [portfolioId], references: [id])
+  images      Image[]
 }
 
 model Image {
-  id              Int       @id @default(autoincrement())
-  url             String?
-  project         CompletedProject @relation(fields: [projectId], references: [id])
-  projectId       Int
+  id        Int              @id @default(autoincrement())
+  url       String?
+  projectId Int
+  project   CompletedProject @relation(fields: [projectId], references: [id])
 }
 
 model Message {
-  id          Int     @id @default(autoincrement())
-  content     String
-  createdAt   DateTime @default(now())
-  senderId    String
-  sender      User    @relation("Sender", fields: [senderId], references: [id])
-  receiverId  String
-  receiver    User    @relation("Receiver", fields: [receiverId], references: [id])
+  id         Int      @id @default(autoincrement())
+  content    String
+  createdAt  DateTime @default(now())
+  senderId   String
+  receiverId String
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  sender     User     @relation("Sender", fields: [senderId], references: [id])
 }

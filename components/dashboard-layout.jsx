@@ -1,6 +1,7 @@
-import { Bell, UserCircle } from "lucide-react";
+import { UserCircle } from "lucide-react";
 import React from "react";
 import Navigation from "./navigation";
+import NotificationPopover from "./notification-popover";
 
 const DashboardLayout = ({ children }) => {
   return (
@@ -10,8 +11,8 @@ const DashboardLayout = ({ children }) => {
         <h1 className="font-black text-emerald-500 tracking-tight text-xl uppercase">
           Buildustry
         </h1>
-        <div className="flex gap-4">
-          <Bell size={24} />
+        <div className="flex gap-4 items-center">
+          <NotificationPopover />
           <UserCircle size={24} />
         </div>
       </div>

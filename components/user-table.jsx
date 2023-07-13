@@ -13,10 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Card } from "./ui/card";
 import Rating from "./rating";
-import WorkerProfileDialog from "./worker-profile-dialog";
-import { Send } from "lucide-react";
-import { Button } from "./ui/button";
-import Link from "next/link";
+import RowActionsDropdown from "./row-actions-dropdown";
 
 export const userColumns = [
   {
@@ -42,16 +39,7 @@ export const userColumns = [
     cell: ({ row }) => {
       const worker = row.original; // TODO use id for navigation
 
-      return (
-        <Link
-          onClick={(e) => e.stopPropagation()}
-          href={`/dashboard/messages`}
-          className="float-right flex gap-2 px-4 py-2 border border-slate-300 rounded-md hover:bg-slate-200"
-        >
-          <Send size={24} strokeWidth={1} />
-          <span>Message</span>
-        </Link>
-      );
+      return <RowActionsDropdown worker={worker} />;
     },
   },
 ];
@@ -87,21 +75,16 @@ export function UserTable({ data, columns }) {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <WorkerProfileDialog key={row.id} worker={row.original}>
-                <TableRow
-                  data-state={row.getIsSelected() && "selected"}
-                  className="cursor-pointer"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </WorkerProfileDialog>
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
             ))
           ) : (
             <TableRow>
