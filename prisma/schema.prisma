@@ -8,22 +8,21 @@ datasource db {
 }
 
 model User {
-  id            String         @id @default(cuid())
-  firstName     String?
-  lastName      String?
-  username      String         @unique
-  password      String         @default("password-excluded")
-  email         String         @unique
-  contactNumber String
-  role          String         @default("client")
-  rating        Float          @default(0)
-  portfolioId   String?        @unique
-  notifications Notification[]
-  projects      Project[]
-  portfolioId   String?     @unique
-  portfolio     Portfolio?  @relation("userPortfolio", fields: [portfolioId], references: [id])
-  sentMessages Message[] @relation("Sender")
-  receivedMessages Message[] @relation("Receiver")
+  id               String         @id @default(cuid())
+  firstName        String?
+  lastName         String?
+  username         String         @unique
+  password         String         @default("password-excluded")
+  email            String         @unique
+  contactNumber    String
+  role             String         @default("client")
+  rating           Float          @default(0)
+  portfolioId      String?        @unique
+  receivedMessages Message[]      @relation("Receiver")
+  sentMessages     Message[]      @relation("Sender")
+  notifications    Notification[]
+  projects         Project[]
+  portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
 }
 
 model Project {
@@ -71,11 +70,11 @@ model Image {
 }
 
 model Message {
-  id          Int     @id @default(autoincrement())
-  content     String
-  createdAt   DateTime @default(now())
-  senderId    String
-  sender      User    @relation("Sender", fields: [senderId], references: [id])
-  receiverId  String
-  receiver    User    @relation("Receiver", fields: [receiverId], references: [id])
+  id         Int      @id @default(autoincrement())
+  content    String
+  createdAt  DateTime @default(now())
+  senderId   String
+  receiverId String
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  sender     User     @relation("Sender", fields: [senderId], references: [id])
 }
