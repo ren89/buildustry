@@ -32,15 +32,17 @@ const DashboardLayout = ({ children, role }) => {
             </PopoverTrigger>
             <PopoverContent>
               <div className="flex flex-col space-y-4">
-                <WorkerProfileDialog worker={user}>
-                  <Button
-                    variant="ghost"
-                    className="items-start justify-start flex gap-2"
-                  >
-                    <User size={24} />
-                    Profile
-                  </Button>
-                </WorkerProfileDialog>
+                {role !== "client" && (
+                  <WorkerProfileDialog worker={user}>
+                    <Button
+                      variant="ghost"
+                      className="items-start justify-start flex gap-2"
+                    >
+                      <User size={24} />
+                      Profile
+                    </Button>
+                  </WorkerProfileDialog>
+                )}
                 <Link
                   href="/"
                   className="items-start justify-start flex gap-2 hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2 rounded-md text-sm font-medium transition-colors"
