@@ -41,6 +41,19 @@ const loginUser = async (req, res) => {
 		sameSite: true,
 	});
 
+	const existingTeam = await prisma.team.findUnique({
+		where: {
+			teamLeaderId: user.id,
+		},
+	});
+	if (!existingTeam && user.role === 'client') {
+		await prisma.team.create({
+			data: {
+				teamLeaderId: user.id,
+			},
+		});
+	}
+
 	res.status(200).json({ ok: true });
 };
 

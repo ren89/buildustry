@@ -30,7 +30,7 @@ const registerUser = async (req, res) => {
 	}
 
 	const hashedPassword = await encryptPassword(password);
-	await prisma.user.create({
+	const user = await prisma.user.create({
 		data: {
 			firstName,
 			lastName,
@@ -41,6 +41,14 @@ const registerUser = async (req, res) => {
 			contactNumber,
 		},
 	});
+
+	if (user) {
+		await prisma.team.create({
+			data: {
+				teamLeaderId: user.id,
+			},
+		});
+	}
 
 	res.status(201).json({ message: 'User successfully created.' });
 };

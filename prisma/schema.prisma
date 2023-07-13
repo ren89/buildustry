@@ -25,6 +25,24 @@ model User {
   worker           Project[]      @relation("Worker")
   client           Project[]      @relation("Client")
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
+
+  ledTeam          Team?          @relation("TeamLeader")
+  workers          Worker[]
+}
+
+model Team {
+  id               String         @id @default(cuid())
+  teamLeader       User?          @relation("TeamLeader", fields: [teamLeaderId], references: [id])
+  teamLeaderId     String?        @unique
+  workers          Worker[]
+}
+
+model Worker {
+  id               String         @id @default(cuid())
+  team             Team           @relation(fields: [teamId], references: [id])
+  teamId           String
+  worker             User           @relation(fields: [workerId], references: [id])
+  workerId           String
 }
 
 model Project {
