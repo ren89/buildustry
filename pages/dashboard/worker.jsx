@@ -21,7 +21,7 @@ const WorkerDashboard = () => {
   );
 
   return (
-    <DashboardLayout>
+    <DashboardLayout role={user?.role}>
       <section className="flex flex-col items-center col-span-full h-fit">
         <div className="flex flex-col justify-center items-center">
           {!isLoading ? (

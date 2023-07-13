@@ -1,6 +1,8 @@
 import DashboardLayout from "@/components/dashboard-layout";
 import { ProjectsTable, projectsColumns } from "@/components/projects-table";
 import { Label } from "@/components/ui/label";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 const jobs = [
   {
@@ -36,8 +38,14 @@ const jobs = [
 ];
 
 const History = () => {
+  const { data: user } = useQuery(["user"], async () => {
+    const response = await axios.get("/api/auth/me");
+
+    return response.data;
+  });
+
   return (
-    <DashboardLayout>
+    <DashboardLayout role={user?.role}>
       <section className="flex flex-col items-center col-span-full h-fit">
         <section className="flex flex-col items-center col-span-full h-fit">
           <Label className="text-2xl font-bold text-slate-900">
