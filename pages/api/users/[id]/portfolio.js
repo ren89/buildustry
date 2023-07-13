@@ -94,7 +94,7 @@ const createPortfolioByUserId = authMiddleware(async (req, res) => {
 const updatePortfolioByUserId = authMiddleware(async (req, res) => {
   const { id: userId } = req.user;
   const { id } = req.query;
-  const { rating, completedProjects } = req.body;
+  const { rating, name, images } = req.body;
 
   if (userId !== id) {
     res.status(203).json({ message: "Unathorized access" });
@@ -120,25 +120,18 @@ const updatePortfolioByUserId = authMiddleware(async (req, res) => {
     return;
   }
 
-  if (completedProjects) {
-    // Create new completed projects
-    const createdCompletedProjects = [];
-
-    for (const project of completedProjects) {
-      const createdProject = await prisma.completedProject.create({
-        data: {
-          name: project.name,
-          portfolioId: existingPortfolio.id,
-          images: {
-            create: project.images.map((url) => ({
-              url,
-            })),
-          },
+  if (images) {
+    await prisma.completedProject.create({
+      data: {
+        portfolioId: existingPortfolio.id,
+        name,
+        images: {
+          create: images.map((url) => ({
+            url,
+          })),
         },
-      });
-
-      createdCompletedProjects.push(createdProject);
-    }
+      },
+    });
   }
 
   if (rating) {

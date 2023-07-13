@@ -53,7 +53,7 @@ const WorkerPortfolio = ({ portfolio, userIsWorker = false }) => {
                 {project.images.length > 0 ? (
                   project.images.map((image) => (
                     <div key={image.url} className="relative w-32 h-32">
-                      <Image alt="" src={image} fill />
+                      <Image alt="" src={image.url} fill />
                     </div>
                   ))
                 ) : (
