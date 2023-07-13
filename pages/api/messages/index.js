@@ -47,7 +47,7 @@ const sendMessage = authMiddleware(async (req, res) => {
 	});
 
 	io.emit('newMessage', message);
-
+	console.log(message);
 	res.status(201).json(message);
 });
 
@@ -60,8 +60,12 @@ const getMessages = authMiddleware(async (req, res) => {
 	const messages = await prisma.message.findMany({
 		where: {
 			OR: [
-				{ receiverId: receiverId, senderId: senderId },
-				{ receiverId: senderId, senderId: receiverId },
+				{
+					AND: [{ senderId: senderId }, { receiverId: receiverId }],
+				},
+				{
+					AND: [{ receiverId: senderId }, { senderId: receiverId }],
+				},
 			],
 		},
 		include: {
