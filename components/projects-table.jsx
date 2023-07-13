@@ -50,6 +50,11 @@ export const projectsColumns = [
   {
     accessorKey: "worker",
     header: "Worker",
+    cell: ({ row }) => {
+      const name = row.original.worker.name;
+
+      return name;
+    },
   },
   {
     accessorKey: "service",
@@ -120,7 +125,10 @@ export function ProjectsTable({ data, columns, filter = [] }) {
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) =>
               row.original.status !== "pending" ? (
-                <TableRow data-state={row.getIsSelected() && "selected"}>
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
@@ -136,7 +144,10 @@ export function ProjectsTable({ data, columns, filter = [] }) {
                   viewOnly={true}
                   project={row.original}
                 >
-                  <TableRow data-state={row.getIsSelected() && "selected"}>
+                  <TableRow
+                    data-state={row.getIsSelected() && "selected"}
+                    className="cursor-pointer"
+                  >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
                         {flexRender(

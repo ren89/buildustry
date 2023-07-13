@@ -16,6 +16,9 @@ const getUserNotification = authMiddleware(async (req, res) => {
     orderBy: {
       created_at: "desc",
     },
+    include: {
+      user: true,
+    },
   });
 
   if (!notifications || notifications.length === 0) {
