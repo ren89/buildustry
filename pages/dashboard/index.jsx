@@ -4,31 +4,22 @@ import axios from "axios";
 import DashboardLayout from "@/components/dashboard-layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTable, userColumns } from "@/components/user-table";
-
-export const workers = [
-  {
-    name: "John Doe",
-    rating: 5,
-    role: "contractor",
-  },
-  {
-    name: "John Allen",
-    rating: 5,
-    role: "laborer",
-  },
-  {
-    name: "Calvin",
-    rating: 3.5,
-    role: "contractor",
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Dashboard = () => {
   const { data: user, isLoading } = useQuery(["user"], async () => {
     const response = await axios.get("/api/auth/me");
 
-    return response;
+    return response.data;
   });
+
+  const { data: users, isLoading: usersLoading } = useQuery(
+    ["users"],
+    async () => {
+      const response = await axios.get("/api/users");
+      return response.data;
+    }
+  );
 
   return (
     <DashboardLayout>
@@ -36,7 +27,7 @@ const Dashboard = () => {
         <div className="flex flex-col justify-center items-center">
           {!isLoading ? (
             <Label className="text-2xl font-bold text-slate-900">
-              Hello, {user.data["firstName"] + " " + user.data["lastName"]}
+              Hello, {user.firstName + " " + user.lastName}
             </Label>
           ) : null}
           <Label className="text-slate-500">
@@ -50,12 +41,24 @@ const Dashboard = () => {
             <TabsTrigger value="contractors">Contractors</TabsTrigger>
             <TabsTrigger value="laborers">Laborers</TabsTrigger>
           </TabsList>
-          <TabsContent value="contractors">
-            <UserTable data={workers} columns={userColumns} />
-          </TabsContent>
-          <TabsContent value="laborers">
-            <UserTable data={workers} columns={userColumns} />
-          </TabsContent>
+          {usersLoading ? (
+            <Skeleton className="h-[300px] w-[850px] " />
+          ) : (
+            <>
+              <TabsContent value="contractors">
+                <UserTable
+                  data={users.filter((user) => user.role === "contractor")}
+                  columns={userColumns}
+                />
+              </TabsContent>
+              <TabsContent value="laborers">
+                <UserTable
+                  data={users.filter((user) => user.role === "laborer")}
+                  columns={userColumns}
+                />
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </div>
     </DashboardLayout>

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,7 +6,6 @@ datasource db {
   provider = "sqlite"
   url      = "file:./db/dev.db"
 }
-
 
 model User {
   id            String      @id @default(cuid())
@@ -29,6 +25,17 @@ model User {
   receivedMessages Message[] @relation("Receiver")
 }
 
+model Project {
+  id            String  @id @default(cuid())
+  name          String
+  description   String
+  typeOfService String?
+  status        String  @default("pending")
+  clientId      String
+  workerId      String
+  client        User    @relation(fields: [clientId], references: [id])
+}
+
 model Notification {
   id            String      @id @default(cuid())
   title         String
@@ -39,17 +46,6 @@ model Notification {
   user          User        @relation(fields: [userId], references: [id])
 }
 
-model Project {
-  id              String    @id @default(cuid())
-  name            String
-  description     String
-  typeOfService   String?
-  status          String    @default("pending")
-  clientId        String
-  client          User      @relation(fields: [clientId], references: [id])
-  workerId        String
-  dateFinished    DateTime?
-}
 
 model Portfolio {
   id              String    @id @default(cuid())

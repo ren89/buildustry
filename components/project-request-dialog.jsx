@@ -6,26 +6,45 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import NewProjectForm from "./forms/new-project-form";
-import { Send } from "lucide-react";
-import { Button } from "./ui/button";
 import { useState } from "react";
+import { Button } from "./ui/button";
+import { PlusCircle } from "lucide-react";
 
-const ProjectRequestDialog = ({ viewOnly = false, role }) => {
+const ProjectRequestDialog = ({
+  children,
+  viewOnly = false,
+  role,
+  worker,
+  project,
+}) => {
   const [open, setOpen] = useState(false);
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="float-right flex gap-2">
-          <Send size={24} strokeWidth={1} />
-          <span>Message</span>
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button
+            onClick={(e) => e.stopPropagation()}
+            variant="outline"
+            className="float-right items-center flex gap-2"
+          >
+            <PlusCircle size={24} strokeWidth={1} />
+            <span>Request Service</span>
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Project</DialogTitle>
         </DialogHeader>
-        <NewProjectForm setOpen={setOpen} viewOnly={viewOnly} role={role} />
+        <NewProjectForm
+          setOpen={setOpen}
+          viewOnly={viewOnly}
+          role={role}
+          worker={worker}
+          project={project}
+        />
       </DialogContent>
     </Dialog>
   );
