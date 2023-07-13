@@ -69,7 +69,7 @@ const Message = () => {
   };
 
   return (
-    <DashboardLayout>
+    <DashboardLayout role={user?.role}>
       {receiver && (
         <div className="col-span-full col-start-2">
           <p className="text-2xl font-bold">

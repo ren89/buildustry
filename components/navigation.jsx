@@ -49,7 +49,7 @@ const Navigation = ({ role }) => {
           href="/dashboard/messages"
           className={cn(
             "flex gap-2",
-            pathname === "/dashboard/messages" &&
+            pathname.includes("messages") &&
               "before:w-1 before:h-full before:bg-emerald-500 before:absolute before:-left-4 relative text-slate-900"
           )}
         >
