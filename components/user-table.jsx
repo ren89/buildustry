@@ -29,9 +29,14 @@ export const userColumns = [
     accessorKey: "rating",
     header: "Rating",
     cell: ({ row }) => {
+      const ratingCount = row.original.ratingCount;
       const rating = row.original.rating;
+      let totalRating = 0;
 
-      return <Rating value={rating} />;
+      if (ratingCount === 0) totalRating = 0;
+      else totalRating = rating / ratingCount;
+
+      return <Rating value={totalRating} />;
     },
   },
   {
