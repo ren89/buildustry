@@ -16,13 +16,19 @@ const ProjectRequestDialog = ({
   role,
   worker,
   project,
+  onDropdown,
+  dropdownMenu,
 }) => {
   const [open, setOpen] = useState(false);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {children ? (
-          children
+        {project ? (
+          <>
+            {onDropdown && dropdownMenu}
+
+            {!onDropdown && <DialogTrigger asChild>{children}</DialogTrigger>}
+          </>
         ) : (
           <Button
             onClick={(e) => e.stopPropagation()}
