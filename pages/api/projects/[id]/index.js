@@ -16,6 +16,9 @@ const getProjectById = async (req, res) => {
       client: {
         select: userHelper,
       },
+      worker: {
+        select: userHelper,
+      },
     },
   });
 
@@ -30,10 +33,11 @@ const getProjectById = async (req, res) => {
 //  @desc   Update project
 //  @route  PUT /api/projects/:id
 //  @access Private
-const updateUserById = authMiddleware(async (req, res) => {
+const updateProjectById = authMiddleware(async (req, res) => {
   const { id } = req.query;
 
-  const { typeOfService, name, description, status, dateFinished } = req.body;
+  const { typeOfService, name, description, status, dateFinished, isRated } =
+    req.body;
   console.log(req.body);
   const { id: clientId } = req.user;
 
@@ -59,6 +63,7 @@ const updateUserById = authMiddleware(async (req, res) => {
     description: description || project.description,
     status: status || project.status,
     dateFinished: dateFinished || project.dateFinished,
+    isRated: isRated || project.isRated,
   };
 
   const updatedProject = await prisma.project.update({
@@ -68,6 +73,9 @@ const updateUserById = authMiddleware(async (req, res) => {
     data: updatedProjectData,
     include: {
       client: {
+        select: userHelper,
+      },
+      worker: {
         select: userHelper,
       },
     },
@@ -114,7 +122,7 @@ export default asyncHandler(async (req, res) => {
       await getProjectById(req, res);
       break;
     case "PUT":
-      await updateUserById(req, res);
+      await updateProjectById(req, res);
       break;
     case "DELETE":
       await deleteProjectById(req, res);

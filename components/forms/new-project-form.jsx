@@ -10,6 +10,7 @@ import { useToast } from "../ui/use-toast";
 import { services } from "@/lib/services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import Rate from "../rate";
 
 const newProjectSchema = z.object({
   projectName: z.string().min(1, { message: "Project name is required" }),
@@ -60,7 +61,6 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
 
   const { mutate: updateStatus } = useMutation(
     async (values) => {
-      console.log(values.status);
       await axios.put(`/api/projects/${values.id}`, {
         status: values.status,
       });
@@ -119,7 +119,6 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
       id: project.clientId,
     });
   }
-  console.log(project);
 
   return (
     <Form {...form}>
@@ -161,19 +160,32 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
             viewOnly={viewOnly}
           />
         )}
-        {project.typeOfService !== "" && project.typeOfService !== null && (
-          <FormSelect
-            form={form}
-            name="service"
-            label="Service"
-            placeholder="Select a Service"
-            options={services}
-            viewOnly={viewOnly}
-          />
-        )}
+
+        {project &&
+          project.typeOfService !== "" &&
+          project.typeOfService !== null && (
+            <FormSelect
+              form={form}
+              name="service"
+              label="Service"
+              placeholder="Select a Service"
+              options={services}
+              viewOnly={viewOnly}
+            />
+          )}
 
         {project ? (
-          project.status !== "inProgress" ? (
+          project.status === "completed" ? (
+            user.role === "client" &&
+            !project.isRated && (
+              <Rate
+                workerId={project.workerId}
+                setOpen={setOpen}
+                projectId={project.id}
+              />
+            )
+          ) : project.status === "cancelled" ? null : project.status !==
+            "inProgress" ? (
             <div className="flex gap-4">
               <Button
                 className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
@@ -227,6 +239,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
             {viewOnly ? "Close" : "Submit"}
           </Button>
         )}
+        {/* {project.status === "completed" && <Rate />} */}
       </form>
     </Form>
   );
