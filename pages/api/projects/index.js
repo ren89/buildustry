@@ -6,6 +6,7 @@ import { userHelper } from "@/lib/helper";
 //  @desc   Get all projects
 //  @route  GET /api/projects
 //  @access Private
+
 const getProjects = authMiddleware(async (req, res) => {
   const { id: userId } = req.user;
   const projects = await prisma.project.findMany({
@@ -23,6 +24,9 @@ const getProjects = authMiddleware(async (req, res) => {
       client: {
         select: userHelper,
       },
+      worker: {
+				select: userHelper,
+			},
     },
   });
   res.status(200).json(projects);
@@ -36,20 +40,24 @@ const createProject = authMiddleware(async (req, res) => {
 
   const { id: clientId } = req.user;
 
-  const project = await prisma.project.create({
-    data: {
-      typeOfService,
-      name,
-      description,
-      clientId,
-      workerId,
-    },
-    include: {
-      client: {
-        select: userHelper,
-      },
-    },
-  });
+
+	const project = await prisma.project.create({
+		data: {
+			typeOfService,
+			name,
+			description,
+			clientId,
+			workerId,
+		},
+		include: {
+			client: {
+				select: userHelper,
+			},
+			worker: {
+				select: userHelper,
+			},
+		},
+	});
 
   res.status(201).json(project);
 });

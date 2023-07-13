@@ -3,7 +3,7 @@ import { History, LayoutDashboard, MessageSquare, Users } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const Navigation = () => {
+const Navigation = ({ role }) => {
   const router = useRouter();
   const pathname = router.pathname;
 
@@ -14,24 +14,27 @@ const Navigation = () => {
           href="/dashboard"
           className={cn(
             "flex gap-2",
-            pathname === "/dashboard" &&
-              "before:w-1 before:h-full before:bg-emerald-500 before:absolute before:-left-4 relative text-slate-900"
+            pathname === "/dashboard" ||
+              (pathname === "/dashboard/worker" &&
+                "before:w-1 before:h-full before:bg-emerald-500 before:absolute before:-left-4 relative text-slate-900")
           )}
         >
           <LayoutDashboard size={24} />
           <span>Home</span>
         </Link>
-        <Link
-          href="/dashboard/team"
-          className={cn(
-            "flex gap-2",
-            pathname === "/dashboard/team" &&
-              "before:w-1 before:h-full before:bg-emerald-500 before:absolute before:-left-4 relative text-slate-900"
-          )}
-        >
-          <Users size={24} />
-          <span>My Team</span>
-        </Link>
+        {role === "client" && (
+          <Link
+            href="/dashboard/team"
+            className={cn(
+              "flex gap-2",
+              pathname === "/dashboard/team" &&
+                "before:w-1 before:h-full before:bg-emerald-500 before:absolute before:-left-4 relative text-slate-900"
+            )}
+          >
+            <Users size={24} />
+            <span>My Team</span>
+          </Link>
+        )}
         <Link
           href="/dashboard/history"
           className={cn(
