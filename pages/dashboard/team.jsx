@@ -11,7 +11,7 @@ import { useState } from "react";
 
 const Team = () => {
   const [laborers, setLaborers] = useState([]);
-  const [Contractors, setContractors] = useState([]);
+  const [contractors, setContractors] = useState([]);
   const { data: user, isLoading } = useQuery(
     ["user"],
     async () => {
@@ -21,16 +21,20 @@ const Team = () => {
     },
     {
       onSuccess(response) {
-        setLaborers(
-          response.ledTeam.workers.filter(
-            (team) => team.worker.role === "laborer"
-          )
-        );
-        setContractors(
-          response.ledTeam.workers.filter(
-            (team) => team.worker.role === "contractor"
-          )
-        );
+        if (response.ledTeam) {
+          setLaborers(
+            response.ledTeam?.workers.filter(
+              (team) => team.worker.role === "laborer"
+            )
+          );
+        }
+        if (response.ledTeam) {
+          setContractors(
+            response.ledTeam?.workers.filter(
+              (team) => team.worker.role === "contractor"
+            )
+          );
+        }
       },
     }
   );
@@ -43,7 +47,7 @@ const Team = () => {
     }
   );
   if (!isLoading) {
-    console.log(laborers);
+    console.log(contractors);
   }
 
   return (
@@ -65,7 +69,7 @@ const Team = () => {
                   Contractors
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {Contractors.map((team, index) => {
+                  {contractors.map((team, index) => {
                     return (
                       <div
                         className="flex justify-between items-center gap-4"
