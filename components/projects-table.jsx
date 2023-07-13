@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import ProjectRequestDialog from "./project-request-dialog";
 import { useEffect, useState } from "react";
-import WorkerRowActionsDropdown from "./worker-row-actions-dropdown";
+import ProjectRowActionsDropdown from "./project-row-actions-dropdown";
 
 export const statusColors = {
   "for review": "blue",
@@ -51,7 +51,7 @@ export const projectsColumns = [
   {
     accessorKey: "worker",
     header: "Worker",
-    cell: ({ row }) => {
+    cell: ({ row }) => 
       const name = row.original.worker.name;
 
       return name;
@@ -87,12 +87,12 @@ export const projectsColumns = [
     cell: ({ row }) => {
       const project = row.original; // TODO use id for navigation
 
-      return <WorkerRowActionsDropdown project={project} />;
+      return <ProjectRowActionsDropdown project={project} />;
     },
   },
 ];
 
-export function ProjectsTable({ data, columns, filter = [] }) {
+export function ProjectsTable({ data, columns, filter = [], history }) {
   const [columnFilters, setColumnFilters] = useState(filter);
 
   const table = useReactTable({
@@ -109,7 +109,6 @@ export function ProjectsTable({ data, columns, filter = [] }) {
   useEffect(() => {
     filter.map((column) => table.getColumn(column).toggleVisibility(false));
   }, [filter, table]);
-
   return (
     <Card className="w-[850px]">
       <Table>
@@ -133,26 +132,18 @@ export function ProjectsTable({ data, columns, filter = [] }) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map(
-              (row) =>
-                // row.original.status !== "pending" ? (
-                (row.original.status === "pending" ||
-                  row.original.status === "inProgress") && (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                )
-            )
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

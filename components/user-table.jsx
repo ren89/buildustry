@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/table";
 import { Card } from "./ui/card";
 import Rating from "./rating";
-import RowActionsDropdown from "./row-actions-dropdown";
+import WorkerRowActionsDropdown from "./worker-row-actions-dropdown";
 
 export const userColumns = [
   {
@@ -39,7 +39,7 @@ export const userColumns = [
     cell: ({ row }) => {
       const worker = row.original; // TODO use id for navigation
 
-      return <RowActionsDropdown worker={worker} />;
+      return <WorkerRowActionsDropdown worker={worker} />;
     },
   },
 ];

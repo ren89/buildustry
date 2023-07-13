@@ -13,10 +13,13 @@ const WorkerDashboard = () => {
   });
 
   const { data: projects, isLoading: projectsLoading } = useQuery(
-    ["projects"],
+    ["projects", user?.id],
     async () => {
       const response = await axios.get("/api/projects");
       return response.data;
+    },
+    {
+      enabled: !!user,
     }
   );
 
@@ -39,7 +42,9 @@ const WorkerDashboard = () => {
           <ProjectsTable
             data={projects.filter(
               (project) =>
-                project.status !== "completed" && project.workerId === user.id
+                (project.status === "pending" ||
+                  project.status === "inProgress") &&
+                project.workerId === user.id
             )}
             columns={projectsColumns}
             filter={["dateFinished", "worker"]}

@@ -8,7 +8,7 @@ import FormTextArea from "../form-text-area";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { services } from "@/lib/services";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const newProjectSchema = z.object({
@@ -35,6 +35,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
     },
   });
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async (values) => {
@@ -70,7 +71,8 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
           title: "Status Changed",
           description: "Project status has been updated.",
         });
-        // setOpen(false);
+        setOpen(false);
+        queryClient.invalidateQueries(["projects", user.id]);
       },
     }
   );
@@ -117,6 +119,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
       id: project.clientId,
     });
   }
+  console.log(project);
 
   return (
     <Form {...form}>
@@ -170,34 +173,50 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
         )}
 
         {project ? (
-          <div className="flex gap-4">
-            <Button
-              className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
-              type="button"
-              onClick={() =>
-                updateProjectStatus({
-                  newStatus: "cancelled",
-                  notificationTitle: "Project Declined",
-                  notificationContent: "Your project request are declined. ",
-                })
-              }
-            >
-              Cancel
-            </Button>
+          project.status !== "inProgress" ? (
+            <div className="flex gap-4">
+              <Button
+                className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
+                type="button"
+                onClick={() =>
+                  updateProjectStatus({
+                    newStatus: "cancelled",
+                    notificationTitle: "Project Declined",
+                    notificationContent: "Your project request are declined. ",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+                type="button"
+                onClick={() =>
+                  updateProjectStatus({
+                    newStatus: "inProgress",
+                    notificationTitle: "Project Accepted",
+                    notificationContent: "Your project request are accepted. ",
+                  })
+                }
+              >
+                Accept
+              </Button>
+            </div>
+          ) : (
             <Button
               className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
               type="button"
               onClick={() =>
                 updateProjectStatus({
-                  newStatus: "inProgress",
-                  notificationTitle: "Project Accepted",
-                  notificationContent: "Your project request are accepted. ",
+                  newStatus: "completed",
+                  notificationTitle: "Project Completed",
+                  notificationContent: "Your project request are completed. ",
                 })
               }
             >
-              Accept
+              Complete
             </Button>
-          </div>
+          )
         ) : (
           <Button
             disabled={viewOnly}

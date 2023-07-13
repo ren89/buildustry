@@ -43,7 +43,15 @@ const History = () => {
 
     return response.data;
   });
-
+  
+  const { data: projects, isLoading: projectsLoading } = useQuery(
+    ["projects"],
+    async () => {
+      const response = await axios.get("/api/projects");
+      return response.data;
+    }
+  );
+  
   return (
     <DashboardLayout role={user?.role}>
       <section className="flex flex-col items-center col-span-full h-fit">
@@ -54,7 +62,21 @@ const History = () => {
         </section>
       </section>
       <div className="col-span-full flex justify-center">
-        <ProjectsTable data={jobs} columns={projectsColumns} />
+        {!projectsLoading && !isLoading ? (
+          <ProjectsTable
+            data={projects.filter(
+              (project) =>
+                (project.status === "completed" ||
+                  project.status === "cancelled") &&
+                project.workerId === user.id
+            )}
+            columns={projectsColumns}
+            filter={["actions"]}
+            history={true}
+          />
+        ) : (
+          <Skeleton className="h-[300px] w-[850px] " />
+        )}
       </div>
     </DashboardLayout>
   );
