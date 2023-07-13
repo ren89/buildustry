@@ -37,6 +37,7 @@ model Project {
   worker        User    @relation("Worker", fields: [workerId], references: [id])
   clientId      String
   workerId      String
+  isRated       Boolean @default(false)
  
 }
 
