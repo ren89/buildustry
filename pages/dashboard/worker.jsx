@@ -13,15 +13,18 @@ const WorkerDashboard = () => {
   });
 
   const { data: projects, isLoading: projectsLoading } = useQuery(
-    ["projects"],
+    ["projects", user?.id],
     async () => {
       const response = await axios.get("/api/projects");
       return response.data;
+    },
+    {
+      enabled: !!user,
     }
   );
 
   return (
-    <DashboardLayout>
+    <DashboardLayout role={user?.role}>
       <section className="flex flex-col items-center col-span-full h-fit">
         <div className="flex flex-col justify-center items-center">
           {!isLoading ? (

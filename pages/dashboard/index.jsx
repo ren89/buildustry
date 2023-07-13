@@ -5,6 +5,9 @@ import DashboardLayout from "@/components/dashboard-layout";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { UserTable, userColumns } from "@/components/user-table";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getCookie } from "cookies-next";
+import jwt from "jsonwebtoken";
+import { prisma } from "@/lib/db";
 
 const Dashboard = () => {
   const { data: user, isLoading } = useQuery(["user"], async () => {
@@ -63,6 +66,29 @@ const Dashboard = () => {
       </div>
     </DashboardLayout>
   );
+};
+
+export const getServerSideProps = async ({ req, res }) => {
+  const authToken = getCookie("auth-token", { req, res });
+
+  const { userId } = jwt.verify(authToken, "your-secret-key");
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (user.role !== "client") {
+    return {
+      redirect: {
+        destination: "/dashboard/worker",
+        permanent: false,
+      },
+    };
+  }
+
+  return { props: {} };
 };
 
 export default Dashboard;

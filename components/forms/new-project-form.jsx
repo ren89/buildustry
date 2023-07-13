@@ -8,7 +8,7 @@ import FormTextArea from "../form-text-area";
 import { Button } from "../ui/button";
 import { useToast } from "../ui/use-toast";
 import { services } from "@/lib/services";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 const newProjectSchema = z.object({
@@ -35,6 +35,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
     },
   });
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { mutate } = useMutation(
     async (values) => {
@@ -70,7 +71,8 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
           title: "Status Changed",
           description: "Project status has been updated.",
         });
-        // setOpen(false);
+        setOpen(false);
+        queryClient.invalidateQueries(["projects", user.id]);
       },
     }
   );
