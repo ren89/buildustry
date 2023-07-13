@@ -10,8 +10,24 @@ import Image from "next/image";
 import Rating from "./rating";
 import { Separator } from "./ui/separator";
 import ProjectRequestDialog from "./project-request-dialog";
+import WorkerPortfolio from "./worker-portfolio";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const WorkerProfileContent = ({ worker }) => {
+  const { data: user } = useQuery(["user"], async () => {
+    const response = await axios.get("/api/auth/me");
+
+    return response.data;
+  });
+
+  const { data: portfolio, isLoading } = useQuery(
+    ["portfolio", worker.id],
+    async () => {
+      return (await axios.get(`/api/users/${worker.id}/portfolio`)).data;
+    }
+  );
+
   const computeRating = (rating, count) => {
     return rating / count;
   };
@@ -46,6 +62,12 @@ export const WorkerProfileContent = ({ worker }) => {
       </div>
       <Separator />
       <DialogTitle>Projects Done</DialogTitle>
+      {!isLoading && (
+        <WorkerPortfolio
+          portfolio={portfolio}
+          userIsWorker={user?.id === worker.id}
+        />
+      )}
     </div>
   );
 };
