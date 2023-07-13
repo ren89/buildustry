@@ -46,7 +46,7 @@ const History = () => {
   });
 
   const { data: projects, isLoading: projectsLoading } = useQuery(
-    ["projects"],
+    ["projects", user.id],
     async () => {
       const response = await axios.get("/api/projects");
       return response.data;

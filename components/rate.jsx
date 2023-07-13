@@ -1,11 +1,12 @@
 import { cn } from "@/lib/utils";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Star } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 
 const Rate = ({ workerId, setOpen, projectId }) => {
+  const queryClient = useQueryClient();
   const maxStars = 5;
   const [tempStar, setTempStar] = useState(0);
   const [rating, setRating] = useState(0);
@@ -32,11 +33,18 @@ const Rate = ({ workerId, setOpen, projectId }) => {
     }
   );
 
-  const { mutate: updateStatus } = useMutation(async () => {
-    await axios.put(`/api/projects/${projectId}`, {
-      isRated: true,
-    });
-  });
+  const { mutate: updateStatus } = useMutation(
+    async () => {
+      await axios.put(`/api/projects/${projectId}`, {
+        isRated: true,
+      });
+    },
+    {
+      onSuccess() {
+        queryClient.invalidateQueries(["projects", user.id]);
+      },
+    }
+  );
 
   const onHover = (value) => {
     setTempStar(value);

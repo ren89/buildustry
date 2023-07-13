@@ -26,10 +26,14 @@ const ProjectRowActionsDropdown = ({ project }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
-              <Link href={`/dashboard/messages`} className="flex gap-2">
+              <Link
+                href={`/dashboard/messages/${project.clientId}`}
+                className="flex gap-2"
+              >
                 <span>Message</span>
               </Link>
             </DropdownMenuItem>
+
             <DialogTrigger asChild>
               <DropdownMenuItem>
                 <span>View Project</span>
