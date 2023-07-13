@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import ProjectRequestDialog from "./project-request-dialog";
 import { useEffect, useState } from "react";
+import WorkerRowActionsDropdown from "./worker-row-actions-dropdown";
 
 export const statusColors = {
   "for review": "blue",
@@ -51,7 +52,7 @@ export const projectsColumns = [
     accessorKey: "worker",
     header: "Worker",
     cell: ({ row }) => {
-      const name = row.original.worker.name;
+      const name = row.original.worker ? row.original.worker : "";
 
       return name;
     },
@@ -67,7 +68,7 @@ export const projectsColumns = [
   },
   {
     accessorKey: "status",
-    header: "Status",
+    header: <div className="flex justify-center">Status</div>,
     cell: ({ row }) => (
       <div
         className={cn(
@@ -79,6 +80,15 @@ export const projectsColumns = [
         {row.original.status}
       </div>
     ),
+  },
+  {
+    id: "actions",
+    header: "",
+    cell: ({ row }) => {
+      const project = row.original; // TODO use id for navigation
+
+      return <WorkerRowActionsDropdown project={project} />;
+    },
   },
 ];
 
@@ -123,30 +133,14 @@ export function ProjectsTable({ data, columns, filter = [] }) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) =>
-              row.original.status !== "pending" ? (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ) : (
-                <ProjectRequestDialog
-                  key={row.id}
-                  viewOnly={true}
-                  project={row.original}
-                >
+            table.getRowModel().rows.map(
+              (row) =>
+                // row.original.status !== "pending" ? (
+                (row.original.status === "pending" ||
+                  row.original.status === "inProgress") && (
                   <TableRow
+                    key={row.id}
                     data-state={row.getIsSelected() && "selected"}
-                    className="cursor-pointer"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
@@ -157,8 +151,7 @@ export function ProjectsTable({ data, columns, filter = [] }) {
                       </TableCell>
                     ))}
                   </TableRow>
-                </ProjectRequestDialog>
-              )
+                )
             )
           ) : (
             <TableRow>

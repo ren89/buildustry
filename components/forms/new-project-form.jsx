@@ -59,6 +59,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
 
   const { mutate: updateStatus } = useMutation(
     async (values) => {
+      console.log(values.status);
       await axios.put(`/api/projects/${values.id}`, {
         status: values.status,
       });
@@ -69,7 +70,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
           title: "Status Changed",
           description: "Project status has been updated.",
         });
-        setOpen(false);
+        // setOpen(false);
       },
     }
   );
@@ -157,7 +158,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
             viewOnly={viewOnly}
           />
         )}
-        {project && project.typeOfService !== "" && (
+        {project.typeOfService !== "" && project.typeOfService !== null && (
           <FormSelect
             form={form}
             name="service"
@@ -167,6 +168,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
             viewOnly={viewOnly}
           />
         )}
+
         {project ? (
           <div className="flex gap-4">
             <Button

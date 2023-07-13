@@ -2,10 +2,10 @@
 
 import { Server } from 'socket.io';
 import { createServer } from 'http';
-import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
 import authMiddleware from '@/middlewares/authMiddleware';
 import { prisma } from '@/lib/db';
+import { userHelper } from '@/lib/helper';
 
 let io;
 
@@ -30,24 +30,15 @@ const sendMessage = authMiddleware(async (req, res) => {
 		},
 		include: {
 			sender: {
-				select: {
-					firstName: true,
-					lastName: true,
-					id: true,
-				},
+				select: userHelper,
 			},
 			receiver: {
-				select: {
-					firstName: true,
-					lastName: true,
-					id: true,
-				},
+				select: userHelper,
 			},
 		},
 	});
 
 	io.emit('newMessage', message);
-	console.log(message);
 	res.status(201).json(message);
 });
 
@@ -70,18 +61,10 @@ const getMessages = authMiddleware(async (req, res) => {
 		},
 		include: {
 			sender: {
-				select: {
-					firstName: true,
-					lastName: true,
-					id: true,
-				},
+				select: userHelper,
 			},
 			receiver: {
-				select: {
-					firstName: true,
-					lastName: true,
-					id: true,
-				},
+				select: userHelper,
 			},
 		},
 		orderBy: { createdAt: 'asc' },
