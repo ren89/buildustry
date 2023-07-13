@@ -16,7 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import ProjectRequestDialog from "./project-request-dialog";
 import { useEffect, useState } from "react";
-import WorkerRowActionsDropdown from "./worker-row-actions-dropdown";
+import ProjectRowActionsDropdown from "./project-row-actions-dropdown";
 
 export const statusColors = {
   "for review": "blue",
@@ -87,7 +87,7 @@ export const projectsColumns = [
     cell: ({ row }) => {
       const project = row.original; // TODO use id for navigation
 
-      return <WorkerRowActionsDropdown project={project} />;
+      return <ProjectRowActionsDropdown project={project} />;
     },
   },
 ];

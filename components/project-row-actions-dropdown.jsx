@@ -1,6 +1,5 @@
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./ui/button";
-import WorkerProfileDialog from "./worker-profile-dialog";
 
 import {
   DropdownMenu,
@@ -10,11 +9,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import Link from "next/link";
 import { DialogTrigger } from "./ui/dialog";
+import ProjectRequestDialog from "./project-request-dialog";
 
-const RowActionsDropdown = ({ worker }) => {
+const ProjectRowActionsDropdown = ({ project }) => {
   return (
-    <WorkerProfileDialog
-      worker={worker}
+    <ProjectRequestDialog
+      viewOnly={true}
+      project={project}
       onDropdown
       dropdownMenu={
         <DropdownMenu>
@@ -25,16 +26,13 @@ const RowActionsDropdown = ({ worker }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
-              <Link
-                href={`/dashboard/messages/${worker.id}`}
-                className="flex gap-2"
-              >
+              <Link href={`/dashboard/messages`} className="flex gap-2">
                 <span>Message</span>
               </Link>
             </DropdownMenuItem>
             <DialogTrigger asChild>
               <DropdownMenuItem>
-                <span>View Portfolio</span>
+                <span>View Project</span>
               </DropdownMenuItem>
             </DialogTrigger>
           </DropdownMenuContent>
@@ -44,4 +42,4 @@ const RowActionsDropdown = ({ worker }) => {
   );
 };
 
-export default RowActionsDropdown;
+export default ProjectRowActionsDropdown;
