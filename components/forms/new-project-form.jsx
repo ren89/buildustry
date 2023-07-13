@@ -10,6 +10,7 @@ import { useToast } from "../ui/use-toast";
 import { services } from "@/lib/services";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
+import Rate from "../rate";
 
 const newProjectSchema = z.object({
   projectName: z.string().min(1, { message: "Project name is required" }),
@@ -172,61 +173,68 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
           />
         )}
 
-        {project ? (
-          project.status !== "inProgress" ? (
-            <div className="flex gap-4">
-              <Button
-                className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
-                type="button"
-                onClick={() =>
-                  updateProjectStatus({
-                    newStatus: "cancelled",
-                    notificationTitle: "Project Declined",
-                    notificationContent: "Your project request are declined. ",
-                  })
-                }
-              >
-                Cancel
-              </Button>
+        {project.status !== "completed" ? (
+          project ? (
+            project.status !== "inProgress" ? (
+              <div className="flex gap-4">
+                <Button
+                  className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
+                  type="button"
+                  onClick={() =>
+                    updateProjectStatus({
+                      newStatus: "cancelled",
+                      notificationTitle: "Project Declined",
+                      notificationContent:
+                        "Your project request are declined. ",
+                    })
+                  }
+                >
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+                  type="button"
+                  onClick={() =>
+                    updateProjectStatus({
+                      newStatus: "inProgress",
+                      notificationTitle: "Project Accepted",
+                      notificationContent:
+                        "Your project request are accepted. ",
+                    })
+                  }
+                >
+                  Accept
+                </Button>
+              </div>
+            ) : (
               <Button
                 className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
                 type="button"
                 onClick={() =>
                   updateProjectStatus({
-                    newStatus: "inProgress",
-                    notificationTitle: "Project Accepted",
-                    notificationContent: "Your project request are accepted. ",
+                    newStatus: "completed",
+                    notificationTitle: "Project Completed",
+                    notificationContent: "Your project request are completed. ",
                   })
                 }
               >
-                Accept
+                Complete
               </Button>
-            </div>
+            )
           ) : (
             <Button
+              disabled={viewOnly}
               className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
-              type="button"
-              onClick={() =>
-                updateProjectStatus({
-                  newStatus: "completed",
-                  notificationTitle: "Project Completed",
-                  notificationContent: "Your project request are completed. ",
-                })
-              }
+              type={viewOnly ? "button" : "submit"}
+              onClick={() => viewOnly && setOpen(false)}
             >
-              Complete
+              {viewOnly ? "Close" : "Submit"}
             </Button>
           )
         ) : (
-          <Button
-            disabled={viewOnly}
-            className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
-            type={viewOnly ? "button" : "submit"}
-            onClick={() => viewOnly && setOpen(false)}
-          >
-            {viewOnly ? "Close" : "Submit"}
-          </Button>
+          <Rate />
         )}
+        {/* {project.status === "completed" && <Rate />} */}
       </form>
     </Form>
   );
