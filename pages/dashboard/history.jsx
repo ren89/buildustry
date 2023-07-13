@@ -18,10 +18,6 @@ const History = () => {
       return response.data;
     }
   );
-  if (user) {
-    console.log(user.id);
-    console.log(projects);
-  }
   return (
     <DashboardLayout>
       <section className="flex flex-col items-center col-span-full h-fit">
@@ -36,12 +32,10 @@ const History = () => {
           <ProjectsTable
             data={projects.filter(
               (project) =>
-                (project.status === "completed" ||
-                  project.status === "cancelled") &&
-                project.workerId === user.id
+                project.status === "completed" || project.status === "cancelled"
             )}
             columns={projectsColumns}
-            filter={["actions"]}
+            filter={[]}
             history={true}
           />
         ) : (
