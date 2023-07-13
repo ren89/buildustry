@@ -117,6 +117,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
       id: project.clientId,
     });
   }
+  console.log(project);
 
   return (
     <Form {...form}>
@@ -170,34 +171,50 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
         )}
 
         {project ? (
-          <div className="flex gap-4">
-            <Button
-              className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
-              type="button"
-              onClick={() =>
-                updateProjectStatus({
-                  newStatus: "cancelled",
-                  notificationTitle: "Project Declined",
-                  notificationContent: "Your project request are declined. ",
-                })
-              }
-            >
-              Cancel
-            </Button>
+          project.status !== "inProgress" ? (
+            <div className="flex gap-4">
+              <Button
+                className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
+                type="button"
+                onClick={() =>
+                  updateProjectStatus({
+                    newStatus: "cancelled",
+                    notificationTitle: "Project Declined",
+                    notificationContent: "Your project request are declined. ",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+                type="button"
+                onClick={() =>
+                  updateProjectStatus({
+                    newStatus: "inProgress",
+                    notificationTitle: "Project Accepted",
+                    notificationContent: "Your project request are accepted. ",
+                  })
+                }
+              >
+                Accept
+              </Button>
+            </div>
+          ) : (
             <Button
               className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
               type="button"
               onClick={() =>
                 updateProjectStatus({
-                  newStatus: "inProgress",
-                  notificationTitle: "Project Accepted",
-                  notificationContent: "Your project request are accepted. ",
+                  newStatus: "completed",
+                  notificationTitle: "Project Completed",
+                  notificationContent: "Your project request are completed. ",
                 })
               }
             >
-              Accept
+              Complete
             </Button>
-          </div>
+          )
         ) : (
           <Button
             disabled={viewOnly}
