@@ -26,16 +26,23 @@ model User {
   notifications    Notification[]
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
 
-  teams      Team[] // representing the worker relation
-  ledTeam    Team?  @relation("TeamLeader")
+  ledTeam          Team?          @relation("TeamLeader")
+  workers          Worker[]
 }
 
 model Team {
-  id           Int      @id @default(autoincrement())
-  name         String
-  workers      User[]   // Users as workers
-  teamLeader   User?    @relation("TeamLeader", fields: [teamLeaderId], references: [id]) // User as team leader
-  teamLeaderId String?     @unique
+  id               String         @id @default(cuid())
+  teamLeader       User?          @relation("TeamLeader", fields: [teamLeaderId], references: [id])
+  teamLeaderId     String?        @unique
+  workers          Worker[]
+}
+
+model Worker {
+  id               String         @id @default(cuid())
+  team             Team           @relation(fields: [teamId], references: [id])
+  teamId           String
+  worker             User           @relation(fields: [workerId], references: [id])
+  workerId           String
 }
 
 model Project {

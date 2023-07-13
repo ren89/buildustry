@@ -36,7 +36,8 @@ const getProjectById = async (req, res) => {
 const updateProjectById = authMiddleware(async (req, res) => {
 	const { id } = req.query;
 
-	const { typeOfService, name, description, status, dateFinished } = req.body;
+	const { typeOfService, name, description, status, dateFinished, isRated } =
+		req.body;
 	console.log(req.body);
 	const { id: clientId } = req.user;
 
@@ -62,6 +63,7 @@ const updateProjectById = authMiddleware(async (req, res) => {
 		description: description || project.description,
 		status: status || project.status,
 		dateFinished: dateFinished || project.dateFinished,
+		isRated: isRated || project.isRated,
 	};
 
 	const updatedProject = await prisma.project.update({
