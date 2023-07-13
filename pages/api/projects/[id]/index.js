@@ -1,7 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import asyncHandler from "@/middlewares/asyncHandler";
 import authMiddleware from "@/middlewares/authMiddleware";
 import { prisma } from "@/lib/db";
+import { userHelper } from "@/lib/helper";
 
 //  @desc   Get single project
 //  @route  GET /api/projects/:id
@@ -11,6 +11,11 @@ const getProjectById = async (req, res) => {
   const project = await prisma.project.findUnique({
     where: {
       id,
+    },
+    include: {
+      client: {
+        select: userHelper,
+      },
     },
   });
 
@@ -61,6 +66,11 @@ const updateUserById = authMiddleware(async (req, res) => {
       id,
     },
     data: updatedProjectData,
+    include: {
+      client: {
+        select: userHelper,
+      },
+    },
   });
 
   res.status(200).json(updatedProject);
