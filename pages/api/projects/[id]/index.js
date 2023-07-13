@@ -33,7 +33,7 @@ const getProjectById = async (req, res) => {
 //  @desc   Update project
 //  @route  PUT /api/projects/:id
 //  @access Private
-const updateUserById = authMiddleware(async (req, res) => {
+const updateProjectById = authMiddleware(async (req, res) => {
 	const { id } = req.query;
 
 	const { typeOfService, name, description, status, dateFinished } = req.body;
@@ -79,7 +79,7 @@ const updateUserById = authMiddleware(async (req, res) => {
 		},
 	});
 
-	res.status(200).json(updatedProject);
+	res.status(200).json(updatedProjectData);
 });
 
 //  @desc   Delete project
@@ -120,7 +120,7 @@ export default asyncHandler(async (req, res) => {
 			await getProjectById(req, res);
 			break;
 		case 'PUT':
-			await updateUserById(req, res);
+			await updateProjectById(req, res);
 			break;
 		case 'DELETE':
 			await deleteProjectById(req, res);

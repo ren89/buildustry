@@ -28,8 +28,15 @@ const getUserById = async (req, res) => {
 const updateUserById = async (req, res) => {
 	const { id } = req.query;
 
-	const { firstName, lastName, username, password, email, contactNumber } =
-		req.body;
+	const {
+		firstName,
+		lastName,
+		username,
+		password,
+		email,
+		contactNumber,
+		rating,
+	} = req.body;
 
 	const user = await prisma.user.findUnique({
 		where: {
@@ -42,12 +49,25 @@ const updateUserById = async (req, res) => {
 		return;
 	}
 
+	let newRating;
+	let newRatingCount;
+
+	if (rating) {
+		// Calculate the new rating
+		const existingRatingTotal = user.rating * user.ratingCount;
+		const newRatingTotal = existingRatingTotal + rating;
+		newRatingCount = user.ratingCount + 1;
+		newRating = Math.min(newRatingTotal / newRatingCount, 5);
+	}
+
 	let updatedUserData = {
 		firstName: firstName || user.firstName,
 		lastName: lastName || user.lastName,
 		username: username || user.username,
 		email: email || user.email,
 		contactNumber: contactNumber || user.contactNumber,
+		rating: newRating || user.rating,
+		ratingCount: newRatingCount || user.ratingCount,
 	};
 
 	if (password) {
