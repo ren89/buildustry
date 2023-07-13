@@ -2,8 +2,7 @@ import asyncHandler from '@/middlewares/asyncHandler';
 import { PrismaClient } from '@prisma/client';
 import { getCookie } from 'cookies-next';
 import jwt from 'jsonwebtoken';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 //  @desc   Get current login user
 //  @route  GET /api/auth/me

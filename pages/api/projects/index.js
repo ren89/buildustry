@@ -1,8 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import asyncHandler from '@/middlewares/asyncHandler';
 import authMiddleware from '@/middlewares/authMiddleware';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 //  @desc   Get all projects
 //  @route  GET /api/projects

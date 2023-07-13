@@ -20,7 +20,10 @@ model User {
   portfolioId   String?        @unique
   notifications Notification[]
   projects      Project[]
-  portfolio     Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
+  portfolioId   String?     @unique
+  portfolio     Portfolio?  @relation("userPortfolio", fields: [portfolioId], references: [id])
+  sentMessages Message[] @relation("Sender")
+  receivedMessages Message[] @relation("Receiver")
 }
 
 model Project {
@@ -65,4 +68,14 @@ model Image {
   url       String?
   projectId Int
   project   CompletedProject @relation(fields: [projectId], references: [id])
+}
+
+model Message {
+  id          Int     @id @default(autoincrement())
+  content     String
+  createdAt   DateTime @default(now())
+  senderId    String
+  sender      User    @relation("Sender", fields: [senderId], references: [id])
+  receiverId  String
+  receiver    User    @relation("Receiver", fields: [receiverId], references: [id])
 }

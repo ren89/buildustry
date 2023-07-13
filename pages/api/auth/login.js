@@ -3,8 +3,7 @@ import asyncHandler from '@/middlewares/asyncHandler';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { setCookie } from 'cookies-next';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/db';
 
 //  @desc   Login user
 //  @route  GET /api/auth/login
