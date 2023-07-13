@@ -10,8 +10,27 @@ import Image from "next/image";
 import Rating from "./rating";
 import { Separator } from "./ui/separator";
 import ProjectRequestDialog from "./project-request-dialog";
+import WorkerPortfolio from "./worker-portfolio";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const WorkerProfileContent = ({ worker }) => {
+  const { data: user } = useQuery(["user"], async () => {
+    const response = await axios.get("/api/auth/me");
+
+    return response.data;
+  });
+
+  const { data: portfolio, isLoading } = useQuery(
+    ["portfolio", worker.id],
+    async () => {
+      return (await axios.get(`/api/users/${worker.id}/portfolio`)).data;
+    }
+  );
+
+  const computeRating = (rating, count) => {
+    return rating / count;
+  };
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4 justify-between">
@@ -28,7 +47,13 @@ export const WorkerProfileContent = ({ worker }) => {
             <p className="text-xl font-bold text-emerald-500">{`${worker.firstName} ${worker.lastName}`}</p>
             <p className="text-slate-500 text-sm">{worker.email}</p>
             <p className="text-medium float-right">{worker.contactNumber}</p>
-            <Rating value={worker.rating} />
+            <Rating
+              value={
+                worker.ratingCount === 0
+                  ? 0
+                  : computeRating(worker.rating, worker.ratingCount)
+              }
+            />
           </div>
         </div>
         <div className="self-start">
@@ -37,6 +62,12 @@ export const WorkerProfileContent = ({ worker }) => {
       </div>
       <Separator />
       <DialogTitle>Projects Done</DialogTitle>
+      {!isLoading && (
+        <WorkerPortfolio
+          portfolio={portfolio}
+          userIsWorker={user?.id === worker.id}
+        />
+      )}
     </div>
   );
 };

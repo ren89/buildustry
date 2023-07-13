@@ -1,6 +1,7 @@
 import DashboardLayout from "@/components/dashboard-layout";
 import { ProjectsTable, projectsColumns } from "@/components/projects-table";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -38,12 +39,12 @@ const jobs = [
 ];
 
 const History = () => {
-  const { data: user } = useQuery(["user"], async () => {
+  const { data: user, isLoading } = useQuery(["user"], async () => {
     const response = await axios.get("/api/auth/me");
 
     return response.data;
   });
-  
+
   const { data: projects, isLoading: projectsLoading } = useQuery(
     ["projects"],
     async () => {
@@ -51,7 +52,7 @@ const History = () => {
       return response.data;
     }
   );
-  
+
   return (
     <DashboardLayout role={user?.role}>
       <section className="flex flex-col items-center col-span-full h-fit">
