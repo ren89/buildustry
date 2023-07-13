@@ -52,7 +52,7 @@ export const projectsColumns = [
     accessorKey: "worker",
     header: "Worker",
     cell: ({ row }) => {
-      const name = row.original.worker ? row.original.worker : "";
+      const name = row.original.worker;
 
       return name;
     },
@@ -92,7 +92,7 @@ export const projectsColumns = [
   },
 ];
 
-export function ProjectsTable({ data, columns, filter = [] }) {
+export function ProjectsTable({ data, columns, filter = [], history }) {
   const [columnFilters, setColumnFilters] = useState(filter);
 
   const table = useReactTable({
@@ -109,7 +109,6 @@ export function ProjectsTable({ data, columns, filter = [] }) {
   useEffect(() => {
     filter.map((column) => table.getColumn(column).toggleVisibility(false));
   }, [filter, table]);
-
   return (
     <Card className="w-[850px]">
       <Table>
@@ -133,26 +132,18 @@ export function ProjectsTable({ data, columns, filter = [] }) {
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map(
-              (row) =>
-                // row.original.status !== "pending" ? (
-                (row.original.status === "pending" ||
-                  row.original.status === "inProgress") && (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                )
-            )
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && "selected"}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

@@ -39,7 +39,9 @@ const WorkerDashboard = () => {
           <ProjectsTable
             data={projects.filter(
               (project) =>
-                project.status !== "completed" && project.workerId === user.id
+                (project.status === "pending" ||
+                  project.status === "inProgress") &&
+                project.workerId === user.id
             )}
             columns={projectsColumns}
             filter={["dateFinished", "worker"]}
