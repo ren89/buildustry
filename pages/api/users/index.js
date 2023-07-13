@@ -1,13 +1,19 @@
 import asyncHandler from '@/middlewares/asyncHandler';
 import encryptPassword from '@/utils/encryptPassword';
 import { prisma } from '@/lib/db';
+import authMiddleware from '@/middlewares/authMiddleware';
 
 //  @desc   Get all users
 //  @route  GET /api/users
 //  @access Private
-const getUsers = async (req, res) => {
+const getUsers = authMiddleware(async (req, res) => {
 	const { role } = req.query;
-	const users = await prisma.user.findMany();
+	const { id } = req.user;
+	const users = await prisma.user.findMany({
+		where: {
+			NOT: { id },
+		},
+	});
 
 	let filteredUsers = users;
 
@@ -15,7 +21,7 @@ const getUsers = async (req, res) => {
 		filteredUsers = users.filter((user) => user.role === role);
 	}
 	res.status(200).json(filteredUsers);
-};
+});
 
 //  @desc   Create user
 //  @route  POST /api/users
