@@ -17,6 +17,7 @@ import FormSelect from "@/components/form-select";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 const formSchema = z
   .object({
@@ -37,6 +38,7 @@ const formSchema = z
   });
 
 export default function Register() {
+  const router = useRouter();
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,6 +64,7 @@ export default function Register() {
         title: "User creation",
         description: response.data.message,
       });
+      router.push("/");
     }
   });
 
