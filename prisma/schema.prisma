@@ -25,6 +25,17 @@ model User {
   worker           Project[]      @relation("Worker")
   notifications    Notification[]
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
+
+  teams      Team[] // representing the worker relation
+  ledTeam    Team?  @relation("TeamLeader")
+}
+
+model Team {
+  id           Int      @id @default(autoincrement())
+  name         String
+  workers      User[]   // Users as workers
+  teamLeader   User?    @relation("TeamLeader", fields: [teamLeaderId], references: [id]) // User as team leader
+  teamLeaderId String?     @unique
 }
 
 model Project {
@@ -38,7 +49,6 @@ model Project {
   clientId      String
   workerId      String
   isRated       Boolean @default(false)
- 
 }
 
 model Notification {
