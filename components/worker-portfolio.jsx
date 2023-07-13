@@ -11,10 +11,10 @@ import {
 } from "./ui/dialog";
 import AddPortfolioProjectForm from "./forms/add-portfolio-project-form";
 
-const WorkerPortfolio = ({ portfolio }) => {
+const WorkerPortfolio = ({ portfolio, userIsWorker = false }) => {
   const [open, setOpen] = useState(false);
 
-  if (!portfolio.projects)
+  if (!portfolio.projects && userIsWorker)
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
@@ -31,17 +31,19 @@ const WorkerPortfolio = ({ portfolio }) => {
 
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button variant="outline">Add Project to Portfolio</Button>
-        </DialogTrigger>
-        <DialogContent className="max-w-xl">
-          <DialogHeader>
-            <DialogTitle>Add Project</DialogTitle>
-          </DialogHeader>
-          <AddPortfolioProjectForm setOpen={setOpen} />
-        </DialogContent>
-      </Dialog>
+      {userIsWorker && (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <Button variant="outline">Add Project to Portfolio</Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-xl">
+            <DialogHeader>
+              <DialogTitle>Add Project</DialogTitle>
+            </DialogHeader>
+            <AddPortfolioProjectForm setOpen={setOpen} />
+          </DialogContent>
+        </Dialog>
+      )}
       <ScrollArea className="h-80 w-full" orientation="vertical">
         {portfolio.projects.map((project) => (
           <div key={project.name} className="flex flex-col gap-2 mb-4 max-w-lg">
