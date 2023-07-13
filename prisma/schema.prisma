@@ -24,25 +24,24 @@ model User {
   notifications    Notification[]
   worker           Project[]      @relation("Worker")
   client           Project[]      @relation("Client")
-  portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
-
   ledTeam          Team?          @relation("TeamLeader")
+  portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
   workers          Worker[]
 }
 
 model Team {
-  id               String         @id @default(cuid())
-  teamLeader       User?          @relation("TeamLeader", fields: [teamLeaderId], references: [id])
-  teamLeaderId     String?        @unique
-  workers          Worker[]
+  id           String   @id @default(cuid())
+  teamLeaderId String?  @unique
+  teamLeader   User?    @relation("TeamLeader", fields: [teamLeaderId], references: [id])
+  workers      Worker[]
 }
 
 model Worker {
-  id               String         @id @default(cuid())
-  team             Team           @relation(fields: [teamId], references: [id])
-  teamId           String
-  worker             User           @relation(fields: [workerId], references: [id])
-  workerId           String
+  id       String @id @default(cuid())
+  teamId   String
+  workerId String
+  worker   User   @relation(fields: [workerId], references: [id])
+  team     Team   @relation(fields: [teamId], references: [id])
 }
 
 model Project {

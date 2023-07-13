@@ -7,13 +7,34 @@ import { Eye } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { useState } from "react";
 
 const Team = () => {
-  const { data: user, isLoading } = useQuery(["user"], async () => {
-    const response = await axios.get("/api/auth/me");
+  const [laborers, setLaborers] = useState([]);
+  const [Contractors, setContractors] = useState([]);
+  const { data: user, isLoading } = useQuery(
+    ["user"],
+    async () => {
+      const response = await axios.get("/api/auth/me");
 
-    return response.data;
-  });
+      return response.data;
+    },
+    {
+      onSuccess(response) {
+        setLaborers(
+          response.ledTeam.workers.filter(
+            (team) => team.worker.role === "laborer"
+          )
+        );
+        setContractors(
+          response.ledTeam.workers.filter(
+            (team) => team.worker.role === "contractor"
+          )
+        );
+      },
+    }
+  );
+
   const { data: users, isLoading: usersLoading } = useQuery(
     ["users"],
     async () => {
@@ -21,6 +42,9 @@ const Team = () => {
       return response.data;
     }
   );
+  if (!isLoading) {
+    console.log(laborers);
+  }
 
   return (
     <DashboardLayout role={user?.role}>
@@ -41,51 +65,47 @@ const Team = () => {
                   Contractors
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  {users
-                    .filter((user) => user.role === "contractor")
-                    .map((worker, index) => {
-                      return (
-                        <div
-                          className="flex justify-between items-center gap-4"
-                          key={index}
-                        >
-                          <div>
-                            <p>{`${worker.firstName} ${worker.lastName}`}</p>
-                          </div>
-                          <WorkerProfileDialog worker={worker}>
-                            <Button variant="outline" className="flex gap-2">
-                              <Eye size={24} strokeWidth={1.5} />
-                              <span>View</span>
-                            </Button>
-                          </WorkerProfileDialog>
+                  {Contractors.map((team, index) => {
+                    return (
+                      <div
+                        className="flex justify-between items-center gap-4"
+                        key={index}
+                      >
+                        <div>
+                          <p>{`${team.worker.firstName} ${team.worker.lastName}`}</p>
                         </div>
-                      );
-                    })}
+                        <WorkerProfileDialog worker={team.worker}>
+                          <Button variant="outline" className="flex gap-2">
+                            <Eye size={24} strokeWidth={1.5} />
+                            <span>View</span>
+                          </Button>
+                        </WorkerProfileDialog>
+                      </div>
+                    );
+                  })}
                 </CardContent>
               </Card>
               <Card className="min-w-[18rem]">
                 <CardHeader className="font-bold text-lg">Laborers</CardHeader>
                 <CardContent className="space-y-3">
-                  {users
-                    .filter((user) => user.role === "laborer")
-                    .map((worker, index) => {
-                      return (
-                        <div
-                          className="flex justify-between items-center gap-4"
-                          key={index}
-                        >
-                          <div>
-                            <p>{`${worker.firstName} ${worker.lastName}`}</p>
-                          </div>
-                          <WorkerProfileDialog worker={worker}>
-                            <Button variant="outline" className="flex gap-2">
-                              <Eye size={24} strokeWidth={1.5} />
-                              <span>View</span>
-                            </Button>
-                          </WorkerProfileDialog>
+                  {laborers.map((team, index) => {
+                    return (
+                      <div
+                        className="flex justify-between items-center gap-4"
+                        key={index}
+                      >
+                        <div>
+                          <p>{`${team.worker.firstName} ${team.worker.lastName}`}</p>
                         </div>
-                      );
-                    })}
+                        <WorkerProfileDialog worker={team.worker}>
+                          <Button variant="outline" className="flex gap-2">
+                            <Eye size={24} strokeWidth={1.5} />
+                            <span>View</span>
+                          </Button>
+                        </WorkerProfileDialog>
+                      </div>
+                    );
+                  })}
                 </CardContent>
               </Card>
             </>
