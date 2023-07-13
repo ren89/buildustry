@@ -10,8 +10,18 @@ import Image from "next/image";
 import Rating from "./rating";
 import { Separator } from "./ui/separator";
 import ProjectRequestDialog from "./project-request-dialog";
+import WorkerPortfolio from "./worker-portfolio";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 export const WorkerProfileContent = ({ worker }) => {
+  const { data: portfolio, isLoading } = useQuery(
+    ["portfolio", worker.id],
+    async () => {
+      return (await axios.get(`/api/users/${worker.id}/portfolio`)).data;
+    }
+  );
+
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-4 justify-between">
@@ -37,6 +47,7 @@ export const WorkerProfileContent = ({ worker }) => {
       </div>
       <Separator />
       <DialogTitle>Projects Done</DialogTitle>
+      {!isLoading && <WorkerPortfolio portfolio={portfolio} />}
     </div>
   );
 };

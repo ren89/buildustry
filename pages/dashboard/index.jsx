@@ -79,14 +79,14 @@ export const getServerSideProps = async ({ req, res }) => {
     },
   });
 
-  if (user.role !== "client") {
-    return {
-      redirect: {
-        destination: "/dashboard/worker",
-        permanent: false,
-      },
-    };
-  }
+  // if (user.role !== "client") {
+  //   return {
+  //     redirect: {
+  //       destination: "/dashboard/worker",
+  //       permanent: false,
+  //     },
+  //   };
+  // }
 
   return { props: {} };
 };

@@ -51,7 +51,7 @@ export const projectsColumns = [
   {
     accessorKey: "worker",
     header: "Worker",
-    cell: ({ row }) => 
+    cell: ({ row }) => {
       const name = row.original.worker.name;
 
       return name;
