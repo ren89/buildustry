@@ -59,7 +59,7 @@ const DashboardLayout = ({ children, role }) => {
         <div className="col-span-2 border-r border-slate-200 min-h-[80vh]">
           <Navigation role={role} />
         </div>
-        <div className="col-span-10 grid grid-cols-8 auto-rows-min gap-6">
+        <div className="col-span-10 grid grid-cols-8 auto-rows-min gap-6 px-12">
           {/* Content */}
           {children}
         </div>

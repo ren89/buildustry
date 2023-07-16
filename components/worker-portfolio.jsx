@@ -44,12 +44,16 @@ const WorkerPortfolio = ({ portfolio, userIsWorker = false }) => {
           </DialogContent>
         </Dialog>
       )}
-      <ScrollArea className="h-80 w-full" orientation="vertical">
-        {portfolio.projects &&
-          portfolio.projects.map((project) => (
+      {portfolio.projects ? (
+        <ScrollArea
+          className="w-full"
+          viewportClassName="max-h-[20rem]"
+          orientation="vertical"
+        >
+          {portfolio.projects.map((project) => (
             <div
               key={project.name}
-              className="flex flex-col gap-2 mb-4 max-w-lg"
+              className="flex flex-col gap-2 mb-4 max-w-lg border rounded-md p-2 shadow-md"
             >
               <p className="texl-lg font-semibold">{project.name}</p>
               <ScrollArea orientation="horizontal">
@@ -69,7 +73,35 @@ const WorkerPortfolio = ({ portfolio, userIsWorker = false }) => {
               </ScrollArea>
             </div>
           ))}
-      </ScrollArea>
+          {portfolio.projects.map((project) => (
+            <div
+              key={project.name}
+              className="flex flex-col gap-2 mb-4 max-w-lg border rounded-md p-2 shadow-md"
+            >
+              <p className="texl-lg font-semibold">{project.name}</p>
+              <ScrollArea orientation="horizontal">
+                <div className="flex gap-2">
+                  {project.images.length > 0 ? (
+                    project.images.map((image) => (
+                      <div key={image.url} className="relative w-32 h-32">
+                        <Image alt="" src={image.url} fill />
+                      </div>
+                    ))
+                  ) : (
+                    <p className="italic text-sm">
+                      No images found for this project.
+                    </p>
+                  )}
+                </div>
+              </ScrollArea>
+            </div>
+          ))}
+        </ScrollArea>
+      ) : (
+        <p className="italic text-sm">
+          This worker does not have any project yet.
+        </p>
+      )}
     </>
   );
 };

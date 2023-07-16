@@ -2,32 +2,44 @@ import { Label } from "@radix-ui/react-label";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import DashboardLayout from "@/components/dashboard-layout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { UserTable, userColumns } from "@/components/user-table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getCookie } from "cookies-next";
 import jwt from "jsonwebtoken";
 import { prisma } from "@/lib/db";
+import WorkerCard from "@/components/worker-card";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
+  const [filters, setFilters] = useState(["contractor", "laborer"]);
   const { data: user, isLoading } = useQuery(["user"], async () => {
     const response = await axios.get("/api/auth/me");
 
     return response.data;
   });
 
-  const { data: users, isLoading: usersLoading } = useQuery(
-    ["users"],
+  const { data: workers, isLoading: workersLoading } = useQuery(
+    ["workers"],
     async () => {
       const response = await axios.get("/api/users");
       return response.data;
     }
   );
 
+  const onBadgeClick = (filter) => {
+    setFilters((prev) => {
+      if (filters.includes(filter)) {
+        return prev.filter((f) => f !== filter);
+      }
+
+      return [...prev, filter];
+    });
+  };
+
   return (
     <DashboardLayout role={user?.role}>
-      <section className="flex flex-col items-center col-span-full h-fit">
-        <div className="flex flex-col justify-center items-center">
+      <section className="flex flex-col col-span-full h-fit">
+        <div className="flex flex-col">
           {!isLoading ? (
             <Label className="text-2xl font-bold text-slate-900">
               Hello, {user.firstName + " " + user.lastName}
@@ -38,31 +50,36 @@ const Dashboard = () => {
           </Label>
         </div>
       </section>
-      <div className="col-span-full flex justify-center">
-        <Tabs defaultValue="contractors">
-          <TabsList>
-            <TabsTrigger value="contractors">Contractors</TabsTrigger>
-            <TabsTrigger value="laborers">Laborers</TabsTrigger>
-          </TabsList>
-          {usersLoading ? (
-            <Skeleton className="h-[300px] w-[850px] " />
+      <div className="flex gap-2">
+        <Badge
+          onClick={() => onBadgeClick("contractor")}
+          variant={filters.includes("contractor") ? "default" : "outline"}
+          className="rounded-full cursor-pointer"
+        >
+          Contractors
+        </Badge>
+        <Badge
+          onClick={() => onBadgeClick("laborer")}
+          variant={filters.includes("laborer") ? "default" : "outline"}
+          className="rounded-full cursor-pointer"
+        >
+          Laborers
+        </Badge>
+      </div>
+      <div className="col-span-full flex flex-wrap gap-4">
+        {filters.length !== 0 ? (
+          workersLoading ? (
+            [...new Array(8)].map((_, idx) => (
+              <Skeleton className="w-[224px] h-[344px]" key={idx} />
+            ))
           ) : (
-            <>
-              <TabsContent value="contractors">
-                <UserTable
-                  data={users.filter((user) => user.role === "contractor")}
-                  columns={userColumns}
-                />
-              </TabsContent>
-              <TabsContent value="laborers">
-                <UserTable
-                  data={users.filter((user) => user.role === "laborer")}
-                  columns={userColumns}
-                />
-              </TabsContent>
-            </>
-          )}
-        </Tabs>
+            workers
+              .filter((worker) => filters.includes(worker.role))
+              .map((worker) => <WorkerCard key={worker.id} worker={worker} />)
+          )
+        ) : (
+          <p className="italic text-sm">No services found.</p>
+        )}
       </div>
     </DashboardLayout>
   );

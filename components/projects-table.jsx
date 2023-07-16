@@ -14,7 +14,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import ProjectRequestDialog from "./project-request-dialog";
 import { useEffect, useState } from "react";
 import ProjectRowActionsDropdown from "./project-row-actions-dropdown";
 import { useQuery } from "@tanstack/react-query";

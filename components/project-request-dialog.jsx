@@ -7,8 +7,6 @@ import {
 } from "./ui/dialog";
 import NewProjectForm from "./forms/new-project-form";
 import { useState } from "react";
-import { Button } from "./ui/button";
-import { PlusCircle } from "lucide-react";
 
 const ProjectRequestDialog = ({
   children,
@@ -30,14 +28,7 @@ const ProjectRequestDialog = ({
             {!onDropdown && <DialogTrigger asChild>{children}</DialogTrigger>}
           </>
         ) : (
-          <Button
-            onClick={(e) => e.stopPropagation()}
-            variant="outline"
-            className="float-right items-center flex gap-2"
-          >
-            <PlusCircle size={24} strokeWidth={1} />
-            <span>Request Service</span>
-          </Button>
+          children
         )}
       </DialogTrigger>
       <DialogContent>

@@ -46,9 +46,6 @@ const Team = () => {
       return response.data;
     }
   );
-  if (!isLoading) {
-    console.log(contractors);
-  }
 
   return (
     <DashboardLayout role={user?.role}>
