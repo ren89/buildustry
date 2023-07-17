@@ -19,11 +19,11 @@ model User {
   rating           Float          @default(0)
   ratingCount      Int            @default(0)
   portfolioId      String?        @unique
-  receivedMessages Message[]      @relation("Receiver")
   sentMessages     Message[]      @relation("Sender")
+  receivedMessages Message[]      @relation("Receiver")
   notifications    Notification[]
-  worker           Project[]      @relation("Worker")
   client           Project[]      @relation("Client")
+  worker           Project[]      @relation("Worker")
   ledTeam          Team?          @relation("TeamLeader")
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
   workers          Worker[]
@@ -40,8 +40,8 @@ model Worker {
   id       String @id @default(cuid())
   teamId   String
   workerId String
-  worker   User   @relation(fields: [workerId], references: [id])
   team     Team   @relation(fields: [teamId], references: [id])
+  worker   User   @relation(fields: [workerId], references: [id])
 }
 
 model Project {
@@ -53,8 +53,8 @@ model Project {
   clientId      String
   workerId      String
   isRated       Boolean @default(false)
-  worker        User    @relation("Worker", fields: [workerId], references: [id])
   client        User    @relation("Client", fields: [clientId], references: [id])
+  worker        User    @relation("Worker", fields: [workerId], references: [id])
 }
 
 model Notification {
@@ -95,6 +95,6 @@ model Message {
   createdAt  DateTime @default(now())
   senderId   String
   receiverId String
-  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
   sender     User     @relation("Sender", fields: [senderId], references: [id])
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
 }
