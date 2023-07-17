@@ -27,7 +27,7 @@ const WorkerCard = ({ worker }) => {
               <div className="flex gap-1 items-center">
                 <Star size={24} className="fill-yellow-500 text-transparent" />
                 <p className="font-semibold text-sm">
-                  {(worker.rating / worker.ratingCount).toFixed(1)}
+                  {(worker.rating || 0 / worker.ratingCount || 0).toFixed(1)}
                 </p>
                 <p className="text-xs text-slate-500">{`(${worker.ratingCount} Reviews)`}</p>
               </div>

@@ -53,6 +53,8 @@ export const WorkerProfileContent = ({ worker }) => {
     }
   );
 
+  const userIsWorker = user?.id === worker.id;
+
   return (
     <div className="space-y-4">
       <div className="flex gap-4 justify-between">
@@ -74,35 +76,34 @@ export const WorkerProfileContent = ({ worker }) => {
             <div className="flex gap-1 items-center">
               <Star size={24} className="fill-yellow-500 text-transparent" />
               <p className="font-semibold text-sm">
-                {(worker.rating / worker.ratingCount).toFixed(1)}
+                {(worker.rating || 0 / worker.ratingCount || 0).toFixed(1)}
               </p>
               <p className="text-xs text-slate-500">{`(${worker.ratingCount} Reviews)`}</p>
             </div>
-            <div className="flex gap-2">
-              <ProjectRequestDialog role={worker.role} worker={worker}>
-                <Button className="bg-emerald-500 hover:bg-emerald-600">
-                  Request Service
-                </Button>
-              </ProjectRequestDialog>
-              <Link
-                href={`/dashboard/messages/${worker.id}`}
-                variant="outline"
-                className="flex items-center text-sm gap-2 h-9 px-4 py-2 border border-input bg-background shadow-sm rounded-md hover:bg-accent hover:text-accent-foreground"
-              >
-                <Send strokeWidth={1} size={16} className="mt-1" />
-                <span>Message</span>
-              </Link>
-            </div>
+            {!userIsWorker && (
+              <div className="flex gap-2">
+                <ProjectRequestDialog role={worker.role} worker={worker}>
+                  <Button className="bg-emerald-500 hover:bg-emerald-600">
+                    Request Service
+                  </Button>
+                </ProjectRequestDialog>
+                <Link
+                  href={`/dashboard/messages/${worker.id}`}
+                  variant="outline"
+                  className="flex items-center text-sm gap-2 h-9 px-4 py-2 border border-input bg-background shadow-sm rounded-md hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Send strokeWidth={1} size={16} className="mt-1" />
+                  <span>Message</span>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
       <Separator />
       <DialogTitle>Projects Done</DialogTitle>
       {!isLoading && (
-        <WorkerPortfolio
-          portfolio={portfolio}
-          userIsWorker={user?.id === worker.id}
-        />
+        <WorkerPortfolio portfolio={portfolio} userIsWorker={userIsWorker} />
       )}
     </div>
   );
