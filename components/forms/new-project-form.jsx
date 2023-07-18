@@ -32,7 +32,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
       projectName: project ? project.name : "",
       description: project ? project.description : "",
       service: project ? project.typeOfService : "",
-      worker: project ? "" : `${worker.firstName} ${worker.lastName}`,
+      worker: project ? "" : worker.name,
     },
   });
   const { toast } = useToast();

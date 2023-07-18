@@ -73,7 +73,7 @@ const Team = () => {
                         key={index}
                       >
                         <div>
-                          <p>{`${team.worker.firstName} ${team.worker.lastName}`}</p>
+                          <p>{team.worker.name}</p>
                         </div>
                         <WorkerProfileDialog worker={team.worker}>
                           <Button variant="outline" className="flex gap-2">
