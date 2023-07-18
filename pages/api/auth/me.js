@@ -28,6 +28,15 @@ const currentUser = async (req, res) => {
 					},
 				},
 			},
+			contractor: {
+				include: {
+					servicesOffered: {
+						select: {
+							service: true,
+						},
+					},
+				},
+			},
 		},
 	});
 

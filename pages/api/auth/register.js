@@ -7,13 +7,16 @@ import { prisma } from '@/lib/db';
 //  @access Public
 const registerUser = async (req, res) => {
 	const {
-		firstName,
-		lastName,
+		name,
 		username,
 		password,
 		email,
 		contactNumber,
 		role,
+		laborType,
+		location,
+		description,
+		servicesOffered,
 	} = req.body;
 
 	// Find the user by username or email
@@ -30,24 +33,69 @@ const registerUser = async (req, res) => {
 	}
 
 	const hashedPassword = await encryptPassword(password);
-	const user = await prisma.user.create({
-		data: {
-			firstName,
-			lastName,
-			username,
-			role,
-			password: hashedPassword,
-			email,
-			contactNumber,
-		},
-	});
-
-	if (user) {
-		await prisma.team.create({
+	if (role === 'client' || !role) {
+		const user = await prisma.user.create({
 			data: {
-				teamLeaderId: user.id,
+				name,
+				username,
+				role,
+				password: hashedPassword,
+				email,
+				contactNumber,
 			},
 		});
+
+		if (user) {
+			await prisma.team.create({
+				data: {
+					teamLeaderId: user.id,
+				},
+			});
+		}
+	} else if (role === 'laborer') {
+		await prisma.user.create({
+			data: {
+				name,
+				username,
+				role,
+				password: hashedPassword,
+				email,
+				contactNumber,
+				laborType,
+			},
+		});
+	} else if (role === 'contractor') {
+		const user = await prisma.user.create({
+			data: {
+				name,
+				username,
+				role,
+				password: hashedPassword,
+				email,
+				contactNumber,
+			},
+		});
+
+		if (user) {
+			const contractor = await prisma.contractor.create({
+				data: {
+					location,
+					description,
+					userId: user.id,
+				},
+			});
+
+			if (contractor) {
+				for (let service of servicesOffered) {
+					await prisma.serviceOffered.create({
+						data: {
+							service,
+							contractorId: contractor.id,
+						},
+					});
+				}
+			}
+		}
 	}
 
 	res.status(201).json({ message: 'User successfully created.' });

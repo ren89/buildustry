@@ -9,8 +9,7 @@ datasource db {
 
 model User {
   id               String         @id @default(cuid())
-  firstName        String?
-  lastName         String?
+  name             String
   username         String         @unique
   password         String         @default("password-excluded")
   email            String         @unique
@@ -27,6 +26,25 @@ model User {
   ledTeam          Team?          @relation("TeamLeader")
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
   workers          Worker[]
+  contractor       Contractor?    @relation("UserContractor")     // If user is contractor
+  laborType        String?        // If user is laborer
+  
+}
+
+model Contractor {
+  id              String     @id @default(cuid())
+  location        String
+  description     String
+  servicesOffered ServiceOffered[]
+  userId          String    @unique
+  user            User      @relation("UserContractor", fields: [userId], references: [id])
+}
+
+model ServiceOffered {
+  id              String     @id @default(cuid())
+  service         String
+  contractorId    String
+  contractor      Contractor @relation(fields: [contractorId], references: [id])
 }
 
 model Team {
