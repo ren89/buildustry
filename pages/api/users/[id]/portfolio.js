@@ -61,31 +61,31 @@ const createPortfolioByUserId = authMiddleware(async (req, res) => {
   }
 
   const { rating, projects } = req.body;
-  const createdPortfolio = await prisma.portfolio.create({
+  await prisma.user.update({
+    where: {
+      id: userId,
+    },
     data: {
-      userId,
-      rating,
-      projects: {
-        create: projects.map((project) => ({
-          name: project.name,
-          images: {
-            create: project.images.map((url) => ({
-              url,
+      portfolio: {
+        create: {
+          userId,
+          rating,
+          projects: {
+            create: projects.map((project) => ({
+              name: project.name,
+              images: {
+                create: project.images.map((url) => ({
+                  url,
+                })),
+              },
             })),
           },
-        })),
-      },
-    },
-    include: {
-      projects: {
-        include: {
-          images: true,
         },
       },
     },
   });
 
-  res.status(200).json(createdPortfolio);
+  res.status(200).json({ message: "Portfolio created successfully" });
 });
 
 //  @desc   Update a portfolio
