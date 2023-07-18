@@ -13,7 +13,7 @@ import WorkerPortfolio from "./worker-portfolio";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "./ui/button";
-import { Send, Star } from "lucide-react";
+import { Send, Star, UserCircle2 } from "lucide-react";
 import Link from "next/link";
 
 const WorkerProfileDialog = ({
@@ -60,15 +60,10 @@ export const WorkerProfileContent = ({ worker }) => {
       <div className="flex gap-4 justify-between">
         <div className="flex gap-4">
           <div className="w-40 aspect-square relative">
-            <Image
-              src="https://picsum.photos/seed/face/500/500"
-              alt=""
-              fill
-              className="rounded-full"
-            />
+            <UserCircle2 size={150} strokeWidth={1} />
           </div>
           <div className="flex flex-col gap-1">
-            <p className="text-2xl font-bold text-emerald-500">{`${worker.firstName} ${worker.lastName}`}</p>
+            <p className="text-2xl font-bold text-emerald-500">{worker.name}</p>
             <div>
               <p className="text-slate-500">{worker.email}</p>
               <p className="text-slate-500">{worker.contactNumber}</p>
@@ -76,7 +71,11 @@ export const WorkerProfileContent = ({ worker }) => {
             <div className="flex gap-1 items-center">
               <Star size={24} className="fill-yellow-500 text-transparent" />
               <p className="font-semibold text-sm">
-                {(worker.rating || 0 / worker.ratingCount || 0).toFixed(1)}
+                {(
+                  worker.rating / worker.ratingCount ||
+                  0 / worker.ratingCount ||
+                  0
+                ).toFixed(1)}
               </p>
               <p className="text-xs text-slate-500">{`(${worker.ratingCount} Reviews)`}</p>
             </div>

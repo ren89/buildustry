@@ -42,7 +42,7 @@ const Dashboard = () => {
         <div className="flex flex-col">
           {!isLoading ? (
             <Label className="text-2xl font-bold text-slate-900">
-              Hello, {user.firstName + " " + user.lastName}
+              Hello, {user.name}
             </Label>
           ) : null}
           <Label className="text-slate-500">

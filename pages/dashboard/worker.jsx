@@ -29,7 +29,7 @@ const WorkerDashboard = () => {
         <div className="flex flex-col justify-center items-center">
           {!isLoading ? (
             <Label className="text-2xl font-bold text-slate-900">
-              Hello, {user.firstName + " " + user.lastName}
+              Hello, {user.name}
             </Label>
           ) : null}
           <Label className="text-slate-500">
