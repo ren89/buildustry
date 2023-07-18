@@ -5,8 +5,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import Image from "next/image";
 import { Separator } from "./ui/separator";
 import ProjectRequestDialog from "./project-request-dialog";
 import WorkerPortfolio from "./worker-portfolio";
@@ -15,6 +15,18 @@ import axios from "axios";
 import { Button } from "./ui/button";
 import { Send, Star, UserCircle2 } from "lucide-react";
 import Link from "next/link";
+import FormTextArea from "./form-text-area";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Form, FormLabel } from "./ui/form";
+import ServiceList from "./service-list";
+import FormInput from "./form-input";
+import { ScrollArea } from "./ui/scroll-area";
+
+const contractorProfileSchema = z.object({
+  description: z.string(),
+  location: z.string(),
+});
 
 const WorkerProfileDialog = ({
   children,
@@ -29,17 +41,30 @@ const WorkerProfileDialog = ({
       {onDropdown && dropdownMenu}
 
       {!onDropdown && <DialogTrigger asChild>{children}</DialogTrigger>}
+
       <DialogContent className="max-w-xl">
-        <DialogHeader>
-          <DialogTitle>Worker Profile</DialogTitle>
-        </DialogHeader>
-        <WorkerProfileContent worker={worker} />
+        <ScrollArea className="max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>Worker Profile</DialogTitle>
+          </DialogHeader>
+          <WorkerProfileContent worker={worker} />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
 };
 
 export const WorkerProfileContent = ({ worker }) => {
+  console.log(worker);
+
+  const form = useForm({
+    resolver: zodResolver(contractorProfileSchema),
+    defaultValues: {
+      description: worker.contractor ? worker.contractor.description : "",
+      location: worker.contractor ? worker.contractor.location : "",
+    },
+  });
+
   const { data: user } = useQuery(["user"], async () => {
     const response = await axios.get("/api/auth/me");
 
@@ -55,6 +80,11 @@ export const WorkerProfileContent = ({ worker }) => {
 
   const userIsWorker = user?.id === worker.id;
 
+  function onSubmit(values) {
+    console.log(values);
+  }
+
+  console.log(worker);
   return (
     <div className="space-y-4">
       <div className="flex gap-4 justify-between">
@@ -99,6 +129,45 @@ export const WorkerProfileContent = ({ worker }) => {
           </div>
         </div>
       </div>
+      <div className="flex-col">
+        <span className="text-sm font-bold">Location: </span>
+        <p>{worker.contractor ? worker.contractor.location : ""}</p>
+      </div>
+      <div className="flex-col">
+        <span className="text-sm font-bold">Details: </span>
+        <p>{worker.contractor ? worker.contractor.description : ""}</p>
+      </div>
+      <div className="flex-col">
+        <span className="text-sm font-bold">Services: </span>
+        <ServiceList
+          services={
+            worker.contractor.servicesOffered
+              ? worker.contractor.servicesOffered
+              : []
+          }
+        />
+      </div>
+      {/* <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-2"
+        >
+          <FormInput
+            form={form}
+            name="location"
+            label="Location"
+            placeholder="Location"
+            viewOnly={true}
+          />
+          <FormTextArea
+            form={form}
+            name="description"
+            label="Details"
+            placeholder="Details"
+            viewOnly={true}
+          />
+        </form>
+      </Form> */}
       <Separator />
       <DialogTitle>Projects Done</DialogTitle>
       {!isLoading && (

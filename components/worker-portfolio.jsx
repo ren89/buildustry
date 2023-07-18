@@ -45,11 +45,12 @@ const WorkerPortfolio = ({ portfolio, userIsWorker = false }) => {
         </Dialog>
       )}
       {portfolio.projects ? (
-        <ScrollArea
-          className="w-full"
-          viewportClassName="max-h-[20rem]"
-          orientation="vertical"
-        >
+        // <ScrollArea
+        //   className="w-full"
+        //   viewportClassName="max-h-[20rem]"
+        //   orientation="vertical"
+        // >
+        <>
           {portfolio.projects.map((project) => (
             <div
               key={project.name}
@@ -73,8 +74,9 @@ const WorkerPortfolio = ({ portfolio, userIsWorker = false }) => {
               </ScrollArea>
             </div>
           ))}
-        </ScrollArea>
+        </>
       ) : (
+        // </ScrollArea>
         <p className="italic text-sm">
           This worker does not have any project yet.
         </p>

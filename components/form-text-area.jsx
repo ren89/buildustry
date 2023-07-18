@@ -21,6 +21,7 @@ const FormTextArea = ({ form, placeholder, label, name, type, viewOnly }) => {
               type={type}
               placeholder={placeholder}
               {...field}
+              className="h-40"
             />
           </FormControl>
           <FormMessage />
