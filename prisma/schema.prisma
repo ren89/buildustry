@@ -42,8 +42,8 @@ model Contractor {
 model ServiceOffered {
   id           String     @id @default(cuid())
   service      String?
-  contractorId String
-  contractor   Contractor @relation(fields: [contractorId], references: [id])
+  contractorId String?
+  contractor   Contractor? @relation(fields: [contractorId], references: [id])
 }
 
 model Team {
