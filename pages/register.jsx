@@ -18,17 +18,19 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { services } from "@/lib/services";
+import { useEffect } from "react";
 
 const formSchema = z
   .object({
     username: z.string().min(3, { message: "Username is required" }),
     email: z.string().email(),
-    firstName: z.string().min(3, { message: "First Name is required" }),
-    lastName: z.string().min(3, { message: "Last Name is required" }),
+    name: z.string().min(3, { message: "Name is required" }),
     contactNumber: z
       .string()
       .min(11, { message: "Contact Number is required" }),
     role: z.string(),
+    laborType: z.string(),
     password: z.string().min(8, { message: "Password is too short" }).max(50),
     confirmPassword: z.string(),
   })
@@ -42,14 +44,14 @@ export default function Register() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name: "",
       username: "",
-      firstName: "",
-      lastName: "",
       contactNumber: "",
       email: "",
       role: "client",
       password: "",
       confirmPassword: "",
+      laborType: "electrician",
     },
   });
 
@@ -72,6 +74,10 @@ export default function Register() {
     mutate(values);
   }
 
+  useEffect(() => {
+    console.log(form.getValues());
+  }, [form]);
+
   return (
     <main className="min-h-screen flex">
       <div className="w-1/2 min-h-full relative">
@@ -91,20 +97,40 @@ export default function Register() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-2"
               >
-                <div className="flex gap-2">
-                  <FormInput
+                <FormSelect
+                  form={form}
+                  name="role"
+                  label="Role"
+                  placeholder="Role"
+                  options={[
+                    { label: "Client", value: "client" },
+                    { label: "Laborer", value: "laborer" },
+                    { label: "Contractor", value: "contractor" },
+                  ]}
+                />
+                {form.watch("role") === "laborer" && (
+                  <FormSelect
                     form={form}
-                    name="firstName"
-                    label="First Name"
-                    placeholder="First Name"
+                    name="laborType"
+                    label="Job"
+                    placeholder="Job"
+                    options={services}
                   />
-                  <FormInput
-                    form={form}
-                    name="lastName"
-                    label="Last Name"
-                    placeholder="Last Name"
-                  />
-                </div>
+                )}
+                <FormInput
+                  form={form}
+                  name="name"
+                  label={
+                    form.watch("role") === "contractor"
+                      ? "Company Name"
+                      : "Full Name"
+                  }
+                  placeholder={
+                    form.watch("role") === "contractor"
+                      ? "Company Name"
+                      : "Full Name"
+                  }
+                />
                 <FormInput
                   form={form}
                   name="username"
@@ -122,17 +148,6 @@ export default function Register() {
                   name="contactNumber"
                   label="Contact Number"
                   placeholder="Contact Number"
-                />
-                <FormSelect
-                  form={form}
-                  name="role"
-                  label="Role"
-                  placeholder="Role"
-                  options={[
-                    { label: "Client", value: "client" },
-                    { label: "Laborer", value: "laborer" },
-                    { label: "Contractor", value: "contractor" },
-                  ]}
                 />
                 <FormInput
                   form={form}

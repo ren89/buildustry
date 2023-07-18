@@ -18,33 +18,32 @@ model User {
   rating           Float          @default(0)
   ratingCount      Int            @default(0)
   portfolioId      String?        @unique
-  sentMessages     Message[]      @relation("Sender")
+  laborType        String?
+  contractor       Contractor?    @relation("UserContractor")
   receivedMessages Message[]      @relation("Receiver")
+  sentMessages     Message[]      @relation("Sender")
   notifications    Notification[]
-  client           Project[]      @relation("Client")
   worker           Project[]      @relation("Worker")
+  client           Project[]      @relation("Client")
   ledTeam          Team?          @relation("TeamLeader")
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id])
   workers          Worker[]
-  contractor       Contractor?    @relation("UserContractor")     // If user is contractor
-  laborType        String?        // If user is laborer
-  
 }
 
 model Contractor {
-  id              String     @id @default(cuid())
-  location        String
-  description     String
+  id              String           @id @default(cuid())
+  location        String?
+  description     String?
+  userId          String           @unique
+  user            User             @relation("UserContractor", fields: [userId], references: [id])
   servicesOffered ServiceOffered[]
-  userId          String    @unique
-  user            User      @relation("UserContractor", fields: [userId], references: [id])
 }
 
 model ServiceOffered {
-  id              String     @id @default(cuid())
-  service         String
-  contractorId    String
-  contractor      Contractor @relation(fields: [contractorId], references: [id])
+  id           String     @id @default(cuid())
+  service      String?
+  contractorId String
+  contractor   Contractor @relation(fields: [contractorId], references: [id])
 }
 
 model Team {
@@ -58,8 +57,8 @@ model Worker {
   id       String @id @default(cuid())
   teamId   String
   workerId String
-  team     Team   @relation(fields: [teamId], references: [id])
   worker   User   @relation(fields: [workerId], references: [id])
+  team     Team   @relation(fields: [teamId], references: [id])
 }
 
 model Project {
@@ -71,8 +70,8 @@ model Project {
   clientId      String
   workerId      String
   isRated       Boolean @default(false)
-  client        User    @relation("Client", fields: [clientId], references: [id])
   worker        User    @relation("Worker", fields: [workerId], references: [id])
+  client        User    @relation("Client", fields: [clientId], references: [id])
 }
 
 model Notification {
@@ -113,6 +112,6 @@ model Message {
   createdAt  DateTime @default(now())
   senderId   String
   receiverId String
-  sender     User     @relation("Sender", fields: [senderId], references: [id])
   receiver   User     @relation("Receiver", fields: [receiverId], references: [id])
+  sender     User     @relation("Sender", fields: [senderId], references: [id])
 }
