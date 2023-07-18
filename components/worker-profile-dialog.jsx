@@ -129,24 +129,28 @@ export const WorkerProfileContent = ({ worker }) => {
           </div>
         </div>
       </div>
-      <div className="flex-col">
-        <span className="text-sm font-bold">Location: </span>
-        <p>{worker.contractor ? worker.contractor.location : ""}</p>
-      </div>
-      <div className="flex-col">
-        <span className="text-sm font-bold">Details: </span>
-        <p>{worker.contractor ? worker.contractor.description : ""}</p>
-      </div>
-      <div className="flex-col">
-        <span className="text-sm font-bold">Services: </span>
-        <ServiceList
-          services={
-            worker.contractor.servicesOffered
-              ? worker.contractor.servicesOffered
-              : []
-          }
-        />
-      </div>
+      {worker.role === "contractor" ? (
+        <>
+          <div className="flex-col">
+            <span className="text-sm font-bold">Location: </span>
+            <p>{worker.contractor ? worker.contractor.location : ""}</p>
+          </div>
+          <div className="flex-col">
+            <span className="text-sm font-bold">Details: </span>
+            <p>{worker.contractor ? worker.contractor.description : ""}</p>
+          </div>
+          <div className="flex-col">
+            <span className="text-sm font-bold">Services: </span>
+            <ServiceList
+              services={
+                worker.contractor.servicesOffered
+                  ? worker.contractor.servicesOffered
+                  : []
+              }
+            />
+          </div>
+        </>
+      ) : null}
       {/* <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
