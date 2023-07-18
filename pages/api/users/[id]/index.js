@@ -1,6 +1,7 @@
 import asyncHandler from '@/middlewares/asyncHandler';
 import encryptPassword from '@/utils/encryptPassword';
 import { prisma } from '@/lib/db';
+import { userHelper } from '@/lib/helper';
 
 //  @desc   Get single user by id
 //  @route  GET /api/users/:id
@@ -60,7 +61,7 @@ const updateUserById = async (req, res) => {
 		laborType,
 		location,
 		description,
-		serviceOffered,
+		servicesOffered,
 	} = req.body;
 
 	const user = await prisma.user.findUnique({
@@ -130,7 +131,7 @@ const updateUserById = async (req, res) => {
 
 	if (
 		user.role === 'contractor' &&
-		(description || location || serviceOffered)
+		(description || location || servicesOffered)
 	) {
 		const contractor = await prisma.contractor.findUnique({
 			where: {
@@ -141,7 +142,6 @@ const updateUserById = async (req, res) => {
 		let updatedContractorData = {
 			location: location || contractor.location,
 			description: description || contractor.description,
-			serviceOffered: serviceOffered || contractor.serviceOffered,
 		};
 
 		await prisma.contractor.update({
@@ -150,6 +150,26 @@ const updateUserById = async (req, res) => {
 			},
 			data: updatedContractorData,
 		});
+
+		if (contractor) {
+			for (let service of servicesOffered) {
+				const existingService = await prisma.serviceOffered.findFirst({
+					where: {
+						contractorId: contractor.id,
+						service,
+					},
+				});
+
+				if (!existingService) {
+					await prisma.serviceOffered.create({
+						data: {
+							contractorId: contractor.id,
+							service,
+						},
+					});
+				}
+			}
+		}
 	}
 
 	const updatedUser = await prisma.user.update({
@@ -157,6 +177,28 @@ const updateUserById = async (req, res) => {
 			id,
 		},
 		data: updatedUserData,
+		include: {
+			ledTeam: {
+				include: {
+					workers: {
+						include: {
+							worker: {
+								select: userHelper,
+							},
+						},
+					},
+				},
+			},
+			contractor: {
+				include: {
+					servicesOffered: {
+						select: {
+							service: true,
+						},
+					},
+				},
+			},
+		},
 	});
 
 	res.status(200).json(updatedUser);
