@@ -10,7 +10,7 @@ import { useState } from "react";
 import { Separator } from "./ui/separator";
 import ProjectRequestDialog from "./project-request-dialog";
 import WorkerPortfolio from "./worker-portfolio";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { Button } from "./ui/button";
 import { Send, Star, UserCircle2 } from "lucide-react";
@@ -55,8 +55,7 @@ const WorkerProfileDialog = ({
 };
 
 export const WorkerProfileContent = ({ worker }) => {
-  console.log(worker);
-
+  const queryClient = useQueryClient();
   const form = useForm({
     resolver: zodResolver(contractorProfileSchema),
     defaultValues: {
@@ -64,6 +63,8 @@ export const WorkerProfileContent = ({ worker }) => {
       location: worker.contractor ? worker.contractor.location : "",
     },
   });
+
+  const [isEditing, setIsEditing] = useState(false);
 
   const { data: user } = useQuery(["user"], async () => {
     const response = await axios.get("/api/auth/me");
@@ -78,13 +79,22 @@ export const WorkerProfileContent = ({ worker }) => {
     }
   );
 
+  const { mutate } = useMutation({
+    mutationFn: async (values) => {
+      return await axios.put(`/api/users/${worker.id}`, values);
+    },
+    onSuccess: () => {
+      setIsEditing(false);
+      queryClient.invalidateQueries(["user"]);
+    },
+  });
+
   const userIsWorker = user?.id === worker.id;
 
   function onSubmit(values) {
-    console.log(values);
+    mutate(values);
   }
 
-  console.log(worker);
   return (
     <div className="space-y-4">
       <div className="flex gap-4 justify-between">
@@ -131,47 +141,63 @@ export const WorkerProfileContent = ({ worker }) => {
       </div>
       {worker.role === "contractor" ? (
         <>
-          <div className="flex-col">
-            <span className="text-sm font-bold">Location: </span>
-            <p>{worker.contractor ? worker.contractor.location : ""}</p>
-          </div>
-          <div className="flex-col">
-            <span className="text-sm font-bold">Details: </span>
-            <p>{worker.contractor ? worker.contractor.description : ""}</p>
-          </div>
-          <div className="flex-col">
-            <span className="text-sm font-bold">Services: </span>
-            <ServiceList
-              services={
-                worker.contractor.servicesOffered
-                  ? worker.contractor.servicesOffered
-                  : []
+          <Button
+            variant={isEditing ? "default" : "outline"}
+            onClick={() => {
+              if (!isEditing) {
+                setIsEditing(true);
+              } else {
+                onSubmit(form.getValues());
               }
-            />
-          </div>
+            }}
+            type={isEditing ? "submit" : "button"}
+          >
+            {isEditing ? "Save Changes" : "Edit Details"}
+          </Button>
+          {isEditing ? (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-2"
+              >
+                <FormInput
+                  form={form}
+                  name="location"
+                  label="Location"
+                  placeholder="Location"
+                />
+                <FormTextArea
+                  form={form}
+                  name="description"
+                  label="Details"
+                  placeholder="Details"
+                />
+              </form>
+            </Form>
+          ) : (
+            <>
+              <div className="flex-col">
+                <span className="text-sm font-bold">Location: </span>
+                <p>{worker.contractor ? worker.contractor.location : ""}</p>
+              </div>
+              <div className="flex-col">
+                <span className="text-sm font-bold">Details: </span>
+                <p>{worker.contractor ? worker.contractor.description : ""}</p>
+              </div>
+              <div className="flex-col">
+                <span className="text-sm font-bold">Services: </span>
+                <ServiceList
+                  services={
+                    worker.contractor.servicesOffered
+                      ? worker.contractor.servicesOffered
+                      : []
+                  }
+                />
+              </div>
+            </>
+          )}
         </>
       ) : null}
-      {/* <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-2"
-        >
-          <FormInput
-            form={form}
-            name="location"
-            label="Location"
-            placeholder="Location"
-            viewOnly={true}
-          />
-          <FormTextArea
-            form={form}
-            name="description"
-            label="Details"
-            placeholder="Details"
-            viewOnly={true}
-          />
-        </form>
-      </Form> */}
       <Separator />
       <DialogTitle>Projects Done</DialogTitle>
       {!isLoading && (

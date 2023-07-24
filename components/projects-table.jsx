@@ -122,10 +122,10 @@ export function ProjectsTable({ data, columns, filter = [], history }) {
     },
   });
 
-  console.log(filter);
   useEffect(() => {
     filter.map((column) => table.getColumn(column).toggleVisibility(false));
   }, [filter, table, user]);
+
   return (
     <Card className="w-[850px]">
       <Table>

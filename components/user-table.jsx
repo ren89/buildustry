@@ -42,7 +42,7 @@ export const userColumns = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const worker = row.original; // TODO use id for navigation
+      const worker = row.original;
 
       return <WorkerRowActionsDropdown worker={worker} />;
     },
