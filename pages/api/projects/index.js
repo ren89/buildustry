@@ -36,7 +36,8 @@ const getProjects = authMiddleware(async (req, res) => {
 //  @route  POST /api/projects
 //  @access Private
 const createProject = authMiddleware(async (req, res) => {
-	const { typeOfService, name, description, workerId } = req.body;
+	const { typeOfService, name, description, workerId, estimationCost } =
+		req.body;
 
 	const { id: clientId } = req.user;
 
@@ -47,6 +48,7 @@ const createProject = authMiddleware(async (req, res) => {
 			description,
 			clientId,
 			workerId,
+			estimationCost,
 		},
 		include: {
 			client: {
