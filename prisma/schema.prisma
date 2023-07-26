@@ -20,11 +20,11 @@ model User {
   portfolioId      String?        @unique
   laborType        String?
   contractor       Contractor?    @relation("UserContractor")
-  sentMessages     Message[]      @relation("Sender")
   receivedMessages Message[]      @relation("Receiver")
+  sentMessages     Message[]      @relation("Sender")
   notifications    Notification[]
-  client           Project[]      @relation("Client")
   worker           Project[]      @relation("Worker")
+  client           Project[]      @relation("Client")
   ledTeam          Team?          @relation("TeamLeader")
   portfolio        Portfolio?     @relation("userPortfolio", fields: [portfolioId], references: [id], onDelete: Cascade)
   workers          Worker[]
@@ -57,22 +57,22 @@ model Worker {
   id       String @id @default(cuid())
   teamId   String
   workerId String
-  team     Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
   worker   User   @relation(fields: [workerId], references: [id], onDelete: Cascade)
+  team     Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
 }
 
 model Project {
-  id            String  @id @default(cuid())
-  name          String
-  description   String
-  typeOfService String?
-  status        String  @default("pending")
-  clientId      String
-  workerId      String
-  isRated       Boolean @default(false)
-  estimationCost Int    @default(0)
-  client        User    @relation("Client", fields: [clientId], references: [id], onDelete: Cascade)
-  worker        User    @relation("Worker", fields: [workerId], references: [id], onDelete: Cascade)
+  id             String  @id @default(cuid())
+  name           String
+  description    String
+  typeOfService  String?
+  status         String  @default("pending")
+  clientId       String
+  workerId       String
+  isRated        Boolean @default(false)
+  estimationCost Int     @default(0)
+  worker         User    @relation("Worker", fields: [workerId], references: [id], onDelete: Cascade)
+  client         User    @relation("Client", fields: [clientId], references: [id], onDelete: Cascade)
 }
 
 model Notification {
@@ -113,6 +113,6 @@ model Message {
   createdAt  DateTime @default(now())
   senderId   String
   receiverId String
-  sender     User     @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
   receiver   User     @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     User     @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
 }

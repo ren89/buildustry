@@ -17,6 +17,7 @@ const newProjectSchema = z.object({
   description: z.string().min(1, { message: "Description is required" }),
   service: z.string().optional(),
   worker: z.string().min(1, { message: "Worker is required" }),
+  estimationCost: z.number(),
 });
 
 const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
@@ -25,19 +26,24 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
 
     return response.data;
   });
-
   const form = useForm({
     resolver: zodResolver(newProjectSchema),
     defaultValues: {
       projectName: project ? project.name : "",
       description: project ? project.description : "",
-      service: project ? project.typeOfService : "",
+      service:
+        worker?.role === "laborer"
+          ? worker.laborType
+          : project
+          ? project.typeOfService
+          : "",
       worker: project ? "" : worker.name,
+      estimationCost: project ? project.estimationCost : 0,
     },
   });
+  console.log(worker);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-
   const { mutate } = useMutation(
     async (values) => {
       await axios.post("/api/projects", {
@@ -63,6 +69,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
     async (values) => {
       await axios.put(`/api/projects/${values.id}`, {
         status: values.status,
+        estimationCost: parseInt(values.estimationCost),
       });
     },
     {
@@ -109,15 +116,32 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
 
   function updateProjectStatus({
     newStatus,
+    estimationCost,
     notificationTitle,
     notificationContent,
   }) {
-    updateStatus({ status: newStatus, id: project.id });
+    updateStatus({
+      status: newStatus,
+      estimationCost: estimationCost,
+      id: project.id,
+    });
     createNotification({
       title: notificationTitle,
       content: notificationContent,
       id: project.clientId,
     });
+  }
+
+  function serviceOffered() {
+    return worker
+      ? worker.contractor.servicesOffered.map((service) => ({
+          label: service.service,
+          value: service.service,
+        }))
+      : user.contractor.servicesOffered.map((service) => ({
+          label: service.service,
+          value: service.service,
+        }));
   }
 
   return (
@@ -150,30 +174,34 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
           />
         )}
 
-        {role === "laborer" && (
+        {role !== "laborer" && (
+          <FormInput
+            form={form}
+            name="estimationCost"
+            label="Estimation Cost"
+            placeholder="estimation cost"
+            viewOnly={user.role === "client"}
+            type="number"
+          />
+        )}
+
+        {role === "laborer" || !worker ? (
+          <FormInput
+            form={form}
+            name="service"
+            label="Service"
+            viewOnly={true}
+          />
+        ) : (
           <FormSelect
             form={form}
             name="service"
             label="Service"
             placeholder="Select a Service"
-            options={services}
+            options={serviceOffered()}
             viewOnly={viewOnly}
           />
         )}
-
-        {project &&
-          project.typeOfService !== "" &&
-          project.typeOfService !== null && (
-            <FormSelect
-              form={form}
-              name="service"
-              label="Service"
-              placeholder="Select a Service"
-              options={services}
-              viewOnly={viewOnly}
-            />
-          )}
-
         {project ? (
           project.status === "completed" ? (
             user.role === "client" &&
@@ -184,8 +212,26 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
                 projectId={project.id}
               />
             )
-          ) : project.status === "cancelled" ? null : project.status !==
-            "inProgress" ? (
+          ) : project.status === "cancelled" ? null : project.status ===
+              "pending" && user.role !== "client" ? (
+            <Button
+              className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+              type="button"
+              onClick={() => {
+                updateProjectStatus({
+                  newStatus: "pending",
+                  estimationCost: form.getValues("estimationCost"),
+                  notificationTitle: "Estimation Cost",
+                  notificationContent:
+                    "Your project request has an estimation cost now. ",
+                });
+              }}
+            >
+              Send estimation cost
+            </Button>
+          ) : project.status !== "inProgress" &&
+            project.estimationCost !== 0 &&
+            user.role === "client" ? (
             <div className="flex gap-4">
               <Button
                 className="bg-slate-500 hover:bg-emerald-600 w-full mt-4"
@@ -193,6 +239,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
                 onClick={() =>
                   updateProjectStatus({
                     newStatus: "cancelled",
+                    estimationCost: form.getValues("estimationCost"),
                     notificationTitle: "Project Declined",
                     notificationContent: "Your project request are declined. ",
                   })
@@ -206,6 +253,7 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
                 onClick={() =>
                   updateProjectStatus({
                     newStatus: "inProgress",
+                    estimationCost: form.getValues("estimationCost"),
                     notificationTitle: "Project Accepted",
                     notificationContent: "Your project request are accepted. ",
                   })
@@ -215,19 +263,22 @@ const NewProjectForm = ({ setOpen, viewOnly, role, worker, project }) => {
               </Button>
             </div>
           ) : (
-            <Button
-              className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
-              type="button"
-              onClick={() =>
-                updateProjectStatus({
-                  newStatus: "completed",
-                  notificationTitle: "Project Completed",
-                  notificationContent: "Your project request are completed. ",
-                })
-              }
-            >
-              Complete
-            </Button>
+            user.role !== "client" && (
+              <Button
+                className="bg-emerald-500 hover:bg-emerald-600 w-full mt-4"
+                type="button"
+                onClick={() =>
+                  updateProjectStatus({
+                    newStatus: "completed",
+                    estimationCost: form.getValues("estimationCost"),
+                    notificationTitle: "Project Completed",
+                    notificationContent: "Your project request are completed. ",
+                  })
+                }
+              >
+                Complete
+              </Button>
+            )
           )
         ) : (
           <Button

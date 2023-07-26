@@ -8,6 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
+import { projectsColumns, ProjectsTable } from "@/components/projects-table";
 
 const Team = () => {
   const [laborers, setLaborers] = useState([]);
@@ -47,8 +48,40 @@ const Team = () => {
     }
   );
 
+  const { data: projects, isLoading: projectsLoading } = useQuery(
+    ["projects", user?.id],
+    async () => {
+      const response = await axios.get("/api/projects");
+      return response.data;
+    },
+    {
+      enabled: !!user,
+    }
+  );
+
   return (
     <DashboardLayout role={user?.role}>
+      <section className="flex flex-col items-center col-span-full h-fit">
+        <Label className="text-2xl font-bold text-slate-900">My Projects</Label>
+      </section>
+      <div className="col-span-full flex justify-center">
+        {!projectsLoading && !isLoading ? (
+          <ProjectsTable
+            data={projects.filter(
+              (project) =>
+                (project.status === "pending" ||
+                  project.status === "inProgress") &&
+                project.clientId === user.id &&
+                project.estimationCost !== 0
+            )}
+            columns={projectsColumns}
+            filter={["dateFinished", "worker"]}
+          />
+        ) : (
+          <Skeleton className="h-[300px] w-[850px] " />
+        )}
+      </div>
+
       <section className="flex flex-col items-center col-span-full h-fit">
         <Label className="text-2xl font-bold text-slate-900">My Team</Label>
       </section>
